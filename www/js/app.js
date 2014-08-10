@@ -1,83 +1,119 @@
-// Global jQuery references
-var $shareModal = null;
-var $commentCount = null;
+var $text = null;
+var $save = null;
+var $poster = null;
+var $font_size = null;
+var $source = null;
+var $logo_wrapper = null;
 
-// Global state
-var firstShareLoad = true;
+var quotes = [
+    {
+        "quote": "I'd been drinking.",
+        "source": "Dennis Rodman"
+    }
+];
 
-/*
- * Run on page load.
- */
-var onDocumentLoad = function(e) {
-    // Cache jQuery references
-    $shareModal = $('#share-modal');
-    $commentCount = $('.comment-count');
+var onDocumentReady = function() {
+    $text = $('.poster blockquote p, .source');
+    $save = $('#save');
+    $poster = $('.poster');
+    $font_size = $('#fontsize');
+    $source = $('.source');
+    $logo_wrapper = $('.logo-wrapper');
 
-    // Bind events
-    $shareModal.on('shown.bs.modal', onShareModalShown);
-    $shareModal.on('hidden.bs.modal', onShareModalHidden);
+    var quote = quotes[Math.floor(Math.random() * quotes.length)];
+    
+    if (quote.size){
+        adjust_font_size(quote.size);
+    }
 
-    renderExampleTemplate();
-    getCommentCount(showCommentCount);
-}
+    $('blockquote p').text(quote.quote);
+    $source.html('&mdash;&thinsp;' + quote.source);
+    process_text();
 
-/*
- * Basic templating example.
- */
-var renderExampleTemplate = function() {
-    var context = $.extend(APP_CONFIG, {
-        'template_path': 'jst/example.html',
-        'config': JSON.stringify(APP_CONFIG, null, 4),
-        'copy': JSON.stringify(COPY, null, 4)
+    $save.on('click', save_image);
+
+    $font_size.on('change', function(){
+        adjust_font_size($(this).val());
     });
 
-    var html = JST.example(context);
-
-    $('#template-example').html(html);
+    var editable = document.querySelectorAll('.poster blockquote, .source');
+    var editor = new MediumEditor(editable, {
+        disableToolbar: true,
+    });
 }
 
 /*
- * Display the comment count.
+ * Smarten quotes.
  */
-var showCommentCount = function(count) {
-    $commentCount.text(count);
+function smarten(a) {
+    a = a.replace(/(^|[-\u2014\s(\["])'/g, "$1\u2018");       // opening singles
+    a = a.replace(/'/g, "\u2019");                            // closing singles & apostrophes
+    a = a.replace(/(^|[-\u2014/\[(\u2018\s])"/g, "$1\u201c"); // opening doubles
+    a = a.replace(/"/g, "\u201d");                            // closing doubles
+    a = a.replace(/--/g, "\u2014");                           // em-dashes
+    a = a.replace(/ \u2014 /g, "\u2009\u2014\u2009");         // full spaces wrapping em dash
+    return a;
+}
 
-    if (count > 0) {
-        $commentCount.addClass('has-comments');
+/*
+ * Slugify a string for a filename.
+ */
+function slugify(text){
+    return text
+        .toLowerCase()
+        .replace(/[^\w ]+/g,'')
+        .replace(/ +/g,'-');
+}
+
+function process_text(){
+    $text = $('.poster blockquote p, .source');
+    $text.each(function(){
+        var raw_text = $.trim($(this).html());
+        $(this).html(smarten(raw_text)).find('br').remove();
+    });
+}
+
+function save_image(){
+    // first check if the quote actually fits
+
+    if (($source.offset().top + $source.height()) > $logo_wrapper.offset().top){
+        alert("Your quote doesn't quite fit. Shorten the text or choose a smaller font-size.");
+        return;
     }
 
-    if (count > 1) {
-        $commentCount.next('.comment-label').text('Comments');
-    }
+    $('canvas').remove();
+    process_text();
+
+    html2canvas($poster, {
+      onrendered: function(canvas) {
+        document.body.appendChild(canvas);
+        window.oCanvas = document.getElementsByTagName("canvas");
+        window.oCanvas = window.oCanvas[0];
+        var strDataURI = window.oCanvas.toDataURL();
+
+        var quote = $('blockquote').text().split(' ', 5);
+        var filename = slugify(quote.join(' '));
+
+        var a = $("<a>").attr("href", strDataURI).attr("download", "quote-" + filename + ".png").appendTo("body");
+
+        a[0].click();
+
+        a.remove();
+
+        $('#download').attr('href', strDataURI).attr('target', '_blank');
+        $('#download').trigger('click');
+      }
+    });
 }
 
-/*
- * Share modal opened.
- */
-var onShareModalShown = function(e) {
-    _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'open-share-discuss']);
+function adjust_font_size(size){
+    var font_size = size.toString() + 'px';
 
-    if (firstShareLoad) {
-        loadComments();
-
-        firstShareLoad = false;
-    }
+    $poster.css('font-size', font_size);
+    
+    if ($font_size.val() !== size){
+        $font_size.val(size);
+    };
 }
 
-/*
- * Share modal closed.
- */
-var onShareModalHidden = function(e) {
-    _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'close-share-discuss']);
-}
-
-/*
- * Text copied to clipboard.
- */
-var onClippyCopy = function(e) {
-    alert('Copied to your clipboard!');
-
-    _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'summary-copied']);
-}
-
-$(onDocumentLoad);
+$(onDocumentReady);
