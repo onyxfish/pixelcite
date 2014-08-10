@@ -59,7 +59,7 @@ def sync():
         return
 
     bucket = _assets_get_bucket()
-    keys = bucket.list(app_config.ASSETS_SLUG)
+    keys = bucket.list()
 
     which = None
     always = False
@@ -68,7 +68,7 @@ def sync():
         download = False
         upload = False
 
-        local_path = key.name.replace(app_config.ASSETS_SLUG, ASSETS_ROOT, 1)
+        local_path = os.path.join(ASSETS_ROOT, key.name)
 
         # Skip root key
         if local_path == '%s/' % ASSETS_ROOT:
@@ -117,7 +117,7 @@ def sync():
 
     # Iterate over files that didn't exist on S3
     for local_path in local_paths:
-        key_name = local_path.replace(ASSETS_ROOT, app_config.ASSETS_SLUG, 1)
+        key_name = local_path.replace(ASSETS_ROOT, '', 1)
         key = bucket.get_key(key_name, validate=False)
 
         print local_path
@@ -170,7 +170,7 @@ def rm(path):
 
                 continue
 
-            key_name = local_path.replace(ASSETS_ROOT, app_config.ASSETS_SLUG, 1)
+            key_name = local_path.replace(ASSETS_ROOT, '', 1)
             key = bucket.get_key(key_name)
             
             _assets_delete(local_path, key)
