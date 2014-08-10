@@ -13,10 +13,6 @@ import os
 """
 NAMES
 """
-# Project name to be used in urls
-# Use dashes, not underscores!
-PROJECT_SLUG = 'pixelcite'
-
 # Project name to be used in file paths
 PROJECT_FILENAME = 'pixelcite'
 
@@ -24,10 +20,6 @@ PROJECT_FILENAME = 'pixelcite'
 REPOSITORY_NAME = 'pixelcite'
 REPOSITORY_URL = 'git@github.com:nprapps/%s.git' % REPOSITORY_NAME
 REPOSITORY_ALT_URL = None # 'git@bitbucket.org:nprapps/%s.git' % REPOSITORY_NAME'
-
-# Project name used for assets rig
-# Should stay the same, even if PROJECT_SLUG changes
-ASSETS_SLUG = 'pixelcite'
 
 """
 DEPLOYMENT
@@ -85,7 +77,7 @@ COPY_PATH = 'data/copy.xlsx'
 """
 SHARING
 """
-SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKETS[0], PROJECT_SLUG)
+SHARE_URL = 'http://%s/' % (PRODUCTION_S3_BUCKETS[0])
 
 """
 ADS
@@ -134,23 +126,23 @@ def configure_targets(deployment_target):
 
     if deployment_target == 'production':
         S3_BUCKETS = PRODUCTION_S3_BUCKETS
-        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKETS[0], PROJECT_SLUG)
+        S3_BASE_URL = 'http://%s' % (S3_BUCKETS[0])
         SERVERS = PRODUCTION_SERVERS
-        SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
+        SERVER_BASE_URL = 'http://%s' % (SERVERS[0])
         DEBUG = False
     elif deployment_target == 'staging':
         S3_BUCKETS = STAGING_S3_BUCKETS
-        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKETS[0], PROJECT_SLUG)
+        S3_BASE_URL = 'http://%s' % (S3_BUCKETS[0])
         SERVERS = STAGING_SERVERS
-        SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
+        SERVER_BASE_URL = 'http://%s' % (SERVERS[0])
         DEBUG = True
     else:
         S3_BUCKETS = []
         S3_BASE_URL = 'http://127.0.0.1:8000'
         SERVERS = []
-        SERVER_BASE_URL = 'http://127.0.0.1:8001/%s' % PROJECT_SLUG
+        SERVER_BASE_URL = 'http://127.0.0.1:8001'
         DEBUG = True
-        APP_LOG_PATH = '/tmp/%s.app.log' % PROJECT_SLUG
+        APP_LOG_PATH = '/tmp/%s.app.log' % PROJECT_FILENAME
 
     DEPLOYMENT_TARGET = deployment_target
 

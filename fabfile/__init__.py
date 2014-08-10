@@ -20,10 +20,6 @@ if app_config.DEPLOY_TO_SERVERS:
 if app_config.DEPLOY_CRONTAB:
     import cron_jobs
 
-# Bootstrap can only be run once, then it's disabled
-if app_config.PROJECT_SLUG == '$NEW_PROJECT_SLUG':
-    import bootstrap
-
 """
 Base configuration
 """
@@ -121,9 +117,9 @@ def _deploy_to_s3(path='.gzip'):
     sync_assets = 'aws s3 sync %s/ %s --acl "public-read" --cache-control "max-age=86400" --region "us-east-1"'
 
     for bucket in app_config.S3_BUCKETS:
-        local(sync % (path, 's3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
-        local(sync_gzip % (path, 's3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
-        local(sync_assets % ('www/assets/', 's3://%s/%s/assets/' % (bucket, app_config.PROJECT_SLUG)))
+        local(sync % (path, 's3://%s/' % (bucket)))
+        local(sync_gzip % (path, 's3://%s/' % (bucket)))
+        local(sync_assets % ('www/assets/', 's3://%s/' % (bucket)))
 
 def _gzip(in_path='www', out_path='.gzip'):
     """
@@ -195,7 +191,7 @@ def shiva_the_destroyer():
         sync = 'aws s3 rm %s --recursive --region "us-east-1"'
 
         for bucket in app_config.S3_BUCKETS:
-            local(sync % ('s3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
+            local(sync % ('s3://%s/' % (bucket)))
 
         if app_config.DEPLOY_TO_SERVERS:
             servers.delete_project()

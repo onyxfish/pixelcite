@@ -18,7 +18,7 @@ app.logger.addHandler(file_handler)
 app.logger.setLevel(logging.INFO)
 
 # Example application views
-@app.route('/%s/test/' % app_config.PROJECT_SLUG, methods=['GET'])
+@app.route('/test/', methods=['GET'])
 def _test_app():
     """
     Test route for verifying the application is running.
@@ -31,10 +31,10 @@ def _test_app():
 import static
 from render_utils import urlencode_filter
 
-app.register_blueprint(static.static, url_prefix='/%s' % app_config.PROJECT_SLUG)
+app.register_blueprint(static.staticG)
 app.jinja_env.filters['urlencode'] = urlencode_filter
 
-@app.route ('/%s/' % app_config.PROJECT_SLUG, methods=['GET'])
+@app.route ('/', methods=['GET'])
 def index():
     """
     Example view rendering a simple page.
