@@ -22,7 +22,7 @@ def sync():
     """
     ignore_globs = []
 
-    with open('%s/.assetsignore' % ASSETS_ROOT, 'r') as f:
+    with open('%s/assetsignore' % ASSETS_ROOT, 'r') as f:
         ignore_globs = [l.strip() for l in f]
 
     local_paths = []

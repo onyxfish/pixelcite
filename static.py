@@ -16,24 +16,22 @@ static = Blueprint('static', __name__)
 # Render JST templates on-demand
 @static.route('/js/templates.js')
 def _templates_js():
-    r = envoy.run('node_modules/universal-jst/bin/jst.js --template underscore jst')
+    output = subprocess.check_output(['node_modules/universal-jst/bin/jst.js', '--template', 'underscore', 'jst'])
 
-    r = subprocess.check_output(["node_modules/universal-jst/bin/jst.js", "--template underscore", "jst"])
-
-    return r.std_out, 200, { 'Content-Type': 'application/javascript' }
+    return output, 200, { 'Content-Type': 'application/javascript' }
 
 # Render LESS files on-demand
 @static.route('/less/<string:filename>')
 def _less(filename):
     try:
-        with open('less/%s' % filename) as f:
-            less = f.read()
+        with open('less/%s' % filename):
+            pass 
     except IOError:
         abort(404)
 
-    r = subprocess.check_output(["node_modules/less/bin/lessc", "-" % (filename)])
+    output = subprocess.check_output(["node_modules/less/bin/lessc", "less/%s" % (filename)])
 
-    return r.std_out, 200, { 'Content-Type': 'text/css' }
+    return output, 200, { 'Content-Type': 'text/css' }
 
 # Render application configuration
 @static.route('/js/app_config.js')
