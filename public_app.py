@@ -19,6 +19,7 @@ from render_utils import make_context
 
 app = Flask(__name__)
 app.config['PROPAGATE_EXCEPTIONS'] = True
+app.secret_key = app_config.get_secrets()['SESSION_KEY']
 
 file_handler = logging.FileHandler(app_config.APP_LOG_PATH)
 file_handler.setLevel(logging.INFO)

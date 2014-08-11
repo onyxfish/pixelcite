@@ -101,7 +101,8 @@ def get_secrets():
     """
     secrets = [
         'TWITTER_CONSUMER_KEY',
-        'TWITTER_CONSUMER_SECRET'
+        'TWITTER_CONSUMER_SECRET',
+        'SESSION_KEY'
     ]
 
     secrets_dict = {}
