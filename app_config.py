@@ -100,7 +100,8 @@ def get_secrets():
     A method for accessing our secrets.
     """
     secrets = [
-        'EXAMPLE_SECRET'
+        'TWITTER_CONSUMER_KEY',
+        'TWITTER_CONSUMER_SECRET'
     ]
 
     secrets_dict = {}
