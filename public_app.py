@@ -13,6 +13,7 @@ import urllib
 import urllib2 
 
 from flask import Flask, abort, redirect, render_template, request, session
+import requests
 
 import app_config
 from render_utils import make_context
@@ -52,6 +53,11 @@ def index():
 
 @app.route('/authenticate')
 def authenticate():
+    """
+    Authenticate w/ Twitter, step 1.
+    """
+    url = 'https://api.twitter.com/oauth/request_token'
+
     session.clear()
     session['oauth_secret'] = ''
 
@@ -65,19 +71,18 @@ def authenticate():
         'oauth_version' : '1.0'
     }
 
-    signature = sign_request(params, 'POST', 'https://api.twitter.com/oauth/request_token')
+    signature = sign_request(params, 'POST', url)
 
     params['oauth_signature'] = signature 
 
-    http_request = urllib2.Request('https://api.twitter.com/oauth/request_token', '')
-    http_request.add_header('Authorization', create_oauth_headers(params))
-
     try:
-        response = urllib2.urlopen(http_request)
+        response = requests.post(url, headers={
+            'Authorization': create_oauth_headers(params)
+        })
     except urllib2.HTTPError, e:
         return e.read()
 
-    data = getParameters(response.read())
+    data = parse_response(response.text)
 
     session['oauth_token'] = data['oauth_token']
     session['oauth_secret'] = data['oauth_token_secret']
@@ -86,6 +91,9 @@ def authenticate():
 
 @app.route('/authorized')
 def authorized():
+    """
+    Authenticate w/ Twitter, step 2.
+    """
     if request.args.get('oauth_token', '') != session['oauth_token']:
         abort(401)
             
@@ -102,33 +110,40 @@ def authorized():
 
     params["oauth_signature"] = signature
 
-    http_request = urllib2.Request("https://api.twitter.com/oauth/access_token", "oauth_verifier=" + request.args.get('oauth_verifier'))
-    http_request.add_header("Authorization", create_oauth_headers(params))
-    
     try:
-        httpResponse = urllib2.urlopen(http_request)
+        response = requests.post('https://api.twitter.com/oauth/access_token', data={
+            'oauth_verifier': request.args.get('oauth_verifier')
+        }, headers={
+            'Authorization': create_oauth_headers(params)
+        })
     except urllib2.HTTPError, e:
         return e.read()
 
-    data = getParameters(httpResponse.read())
+    data = parse_response(response.text)
 
     session['oauth_token'] = data["oauth_token"]
 
     return "Authorised " + session['oauth_token']
 
-def getParameters(paramString):
-    paramString = paramString.split("&")
+def parse_response(text):
+    """
+    Parse a response from Twitter into a dict.
+    """
+    parts = text.split("&")
 
-    pDict = {}
+    data = {}
 
-    for parameter in paramString:
-            parameter = parameter.split("=")
+    for p in parts:
+        k, v = p.split("=")
 
-            pDict[parameter[0]] = parameter[1]
+        data[k] = v
 
-    return pDict
+    return data
 
 def sign_request(parameters, method, baseURL):
+    """
+    Sign an oauth request for Twitter.
+    """
     baseURL = urllib.quote(baseURL, '')
 
     p = collections.OrderedDict(sorted(parameters.items(), key=lambda t: t[0]))
@@ -147,15 +162,15 @@ def sign_request(parameters, method, baseURL):
 
     signingKey = app_config.get_secrets()['TWITTER_CONSUMER_SECRET'] + "&" + session['oauth_secret']
 
-    print signingKey
-
     hashed = hmac.new(signingKey, result, sha1)
     signature = binascii.b2a_base64(hashed.digest())[:-1]
 
     return signature
 
 def create_oauth_headers(oauthParams):
-	
+    """
+    Create a header string containg OAuth data.
+    """
     oauthp = collections.OrderedDict(sorted(oauthParams.items(), key=lambda t: t[0]))
 
     headerString = "OAuth "
