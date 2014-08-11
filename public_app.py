@@ -152,11 +152,11 @@ def sign_request(parameters, method, baseURL):
     parameterString = ""
 
     for idx, key in enumerate(p.keys()):
-            paramString = key + "=" + urllib.quote(str(p[key]), '')
-            if idx < len(p.keys()) - 1:
-                    paramString += "&"
+        paramString = key + "=" + urllib.quote(str(p[key]), '')
+        if idx < len(p.keys()) - 1:
+            paramString += "&"
 
-            parameterString += paramString
+        parameterString += paramString
 
     result = requestString + urllib.quote(parameterString, '')
 
@@ -169,18 +169,18 @@ def sign_request(parameters, method, baseURL):
 
 def create_oauth_headers(oauthParams):
     """
-    Create a header string containg OAuth data.
+    Create a header string containing OAuth data.
     """
     oauthp = collections.OrderedDict(sorted(oauthParams.items(), key=lambda t: t[0]))
 
     headerString = "OAuth "
 
     for idx, key in enumerate(oauthp):
-            hString = key + "=\"" + urllib.quote(str(oauthp[key]), '') + "\""
-            if idx < len(oauthp.keys()) - 1:
-                    hString += ","
+        hString = key + "=\"" + urllib.quote(str(oauthp[key]), '') + "\""
+        if idx < len(oauthp.keys()) - 1:
+            hString += ","
 
-            headerString += hString
+        headerString += hString
 
     return headerString
 
