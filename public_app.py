@@ -31,7 +31,7 @@ def _test_app():
 import static
 from render_utils import urlencode_filter
 
-app.register_blueprint(static.staticG)
+app.register_blueprint(static.static)
 app.jinja_env.filters['urlencode'] = urlencode_filter
 
 @app.route ('/', methods=['GET'])

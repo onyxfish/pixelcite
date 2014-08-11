@@ -18,8 +18,8 @@ PROJECT_FILENAME = 'pixelcite'
 
 # The name of the repository containing the source
 REPOSITORY_NAME = 'pixelcite'
-REPOSITORY_URL = 'git@github.com:nprapps/%s.git' % REPOSITORY_NAME
-REPOSITORY_ALT_URL = None # 'git@bitbucket.org:nprapps/%s.git' % REPOSITORY_NAME'
+REPOSITORY_URL = 'git@github.com:onyxfish/%s.git' % REPOSITORY_NAME
+REPOSITORY_ALT_URL = None # 'git@bitbucket.org:onyxfish/%s.git' % REPOSITORY_NAME'
 
 """
 DEPLOYMENT
@@ -28,11 +28,11 @@ PRODUCTION_S3_BUCKETS = ['media.pixelcite.com']
 STAGING_S3_BUCKETS = []
 ASSETS_S3_BUCKET = 'assets.pixelcite.com'
 
-PRODUCTION_SERVERS = ['cron.nprapps.org']
-STAGING_SERVERS = ['50.112.92.131']
+PRODUCTION_SERVERS = ['54.210.24.220']
+STAGING_SERVERS = []
 
 # Should code be deployed to the web/cron servers?
-DEPLOY_TO_SERVERS = False
+DEPLOY_TO_SERVERS = True 
 
 SERVER_USER = 'ubuntu'
 SERVER_PYTHON = 'python2.7'
@@ -46,7 +46,7 @@ DEPLOY_CRONTAB = False
 
 # Should the service configurations be installed on the servers?
 # If True, DEPLOY_TO_SERVERS must also be True
-DEPLOY_SERVICES = False
+DEPLOY_SERVICES = True 
 
 UWSGI_SOCKET_PATH = '/tmp/%s.uwsgi.sock' % PROJECT_FILENAME
 UWSGI_LOG_PATH = '/var/log/%s.uwsgi.log' % PROJECT_FILENAME
