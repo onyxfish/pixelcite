@@ -12,7 +12,7 @@ import time
 import urllib
 import urllib2 
 
-from flask import Flask, abort, redirect, render_template, request, session
+from flask import Flask, abort, redirect, render_template, request, session, url_for
 import requests
 
 import app_config
@@ -49,12 +49,14 @@ def index():
     """
     Example view rendering a simple page.
     """
-    return render_template('index.html', **make_context(asset_depth=1))
+    context = make_context(asset_depth=1)
 
-@app.route('/authenticate')
+    return render_template('index.html', **context)
+
+@app.route('/authenticate/')
 def authenticate():
     """
-    Authenticate w/ Twitter, step 1.
+    Initiate Twitter authentication.
     """
     url = 'https://api.twitter.com/oauth/request_token'
 
@@ -62,8 +64,8 @@ def authenticate():
     session['oauth_secret'] = ''
 
     params = {
-        # TKTK
-        'oauth_callback' : 'http://54.210.24.220/authorized',
+        # TKTK: don't use IP
+        'oauth_callback' : 'http://54.210.24.220/authorized/',
         'oauth_consumer_key' : app_config.get_secrets()['TWITTER_CONSUMER_KEY'],
         'oauth_nonce' : str(random.randint(1, 999999999)),
         'oauth_signature_method' : 'HMAC-SHA1',
@@ -89,11 +91,13 @@ def authenticate():
 
     return redirect('https://api.twitter.com/oauth/authorize?oauth_token=' + session['oauth_token'])
 
-@app.route('/authorized')
+@app.route('/authorized/')
 def authorized():
     """
-    Authenticate w/ Twitter, step 2.
+    Callback for Twitter authentication.
     """
+    url = 'https://api.twitter.com/oauth/access_token'
+
     if request.args.get('oauth_token', '') != session['oauth_token']:
         abort(401)
             
@@ -106,12 +110,12 @@ def authorized():
         'oauth_token' : session['oauth_token']
     }
 
-    signature = sign_request(params, 'POST', 'https://api.twitter.com/oauth/access_token')
+    signature = sign_request(params, 'POST', url)
 
     params['oauth_signature'] = signature
 
     try:
-        response = requests.post('https://api.twitter.com/oauth/access_token', data={
+        response = requests.post(url, data={
             'oauth_verifier': request.args.get('oauth_verifier')
         }, headers={
             'Authorization': create_oauth_headers(params)
@@ -121,9 +125,10 @@ def authorized():
 
     data = parse_response(response.text)
 
+    session['screen_name'] = data['screen_name']
     session['oauth_token'] = data['oauth_token']
 
-    return 'Authorised ' + session['oauth_token']
+    return redirect(url_for('index'))
 
 def parse_response(text):
     """
