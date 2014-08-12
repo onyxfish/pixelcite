@@ -145,9 +145,9 @@ def parse_response(text):
     data = {}
 
     for p in parts:
-        k, v = p.split('=')
+        bits = p.split('=')
 
-        data[k] = v
+        data[bits[0]] = bits[1]
 
     return data
 
