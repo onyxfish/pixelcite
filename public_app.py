@@ -10,7 +10,6 @@ import logging
 import random
 import time
 import urllib
-import urllib2 
 
 from flask import Flask, abort, redirect, render_template, request, session, url_for
 import requests
@@ -77,12 +76,9 @@ def _authenticate():
 
     params['oauth_signature'] = signature 
 
-    try:
-        response = requests.post(url, headers={
-            'Authorization': create_oauth_headers(params)
-        })
-    except urllib2.HTTPError, e:
-        return e.read()
+    response = requests.post(url, headers={
+        'Authorization': create_oauth_headers(params)
+    })
 
     data = parse_response(response.text)
 
@@ -114,14 +110,11 @@ def _authorized():
 
     params['oauth_signature'] = signature
 
-    try:
-        response = requests.post(url, data={
-            'oauth_verifier': request.args.get('oauth_verifier')
-        }, headers={
-            'Authorization': create_oauth_headers(params)
-        })
-    except urllib2.HTTPError, e:
-        return e.read()
+    response = requests.post(url, data={
+        'oauth_verifier': request.args.get('oauth_verifier')
+    }, headers={
+        'Authorization': create_oauth_headers(params)
+    })
 
     data = parse_response(response.text)
 
@@ -135,6 +128,36 @@ def _logout():
     session.clear()
 
     return redirect(url_for('index'))
+
+@app.route('/post/')
+def _post():
+    # TKTK: check if user is logged in
+
+    url = 'https://api.twitter.com/statuses/update.json'
+    status = 'test'
+
+    params = {
+        'oauth_consumer_key' : app_config.get_secrets()['TWITTER_CONSUMER_KEY'],
+        'oauth_nonce' : str(random.randint(1, 999999999)),
+        'oauth_signature_method' : 'HMAC-SHA1',
+        'oauth_timestamp' : int(time.time()),
+        'oauth_version' : '1.0',
+        'oauth_token' : session['oauth_token']
+    }
+
+    signature = sign_request(params, 'POST', url)
+
+    params['oauth_signature'] = signature
+
+    response = requests.post(url, data={
+        'status': status,
+    }, headers={
+        'Authorization': create_oauth_headers(params)
+    })
+
+    #data = parse_response(response.text)
+
+    return response.text
 
 def parse_response(text):
     """
