@@ -13,10 +13,21 @@ from render_utils import flatten_app_config
 
 static = Blueprint('static', __name__)
 
+def node():
+    """
+    Select correct node binary name for current platform.
+    """
+    if app_config.DEPLOYMENT_TARGET:
+        # Ubuntu
+        return 'nodejs'
+    else:
+        # OSX
+        return 'node'
+
 # Render JST templates on-demand
 @static.route('/js/templates.js')
 def _templates_js():
-    output = subprocess.check_output(['node_modules/universal-jst/bin/jst.js', '--template', 'underscore', 'jst'])
+    output = subprocess.check_output([node(), 'node_modules/universal-jst/bin/jst.js', '--template', 'underscore', 'jst'])
 
     return output, 200, { 'Content-Type': 'application/javascript' }
 
@@ -29,7 +40,7 @@ def _less(filename):
     except IOError:
         abort(404)
 
-    output = subprocess.check_output(["node_modules/less/bin/lessc", "less/%s" % (filename)])
+    output = subprocess.check_output([node(), 'node_modules/less/bin/lessc', 'less/%s' % (filename)])
 
     return output, 200, { 'Content-Type': 'text/css' }
 
