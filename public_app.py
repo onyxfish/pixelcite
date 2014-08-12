@@ -145,9 +145,9 @@ def parse_response(text):
     data = {}
 
     for p in parts:
-        bits = p.split('=')
+        k, v = p.split('=')
 
-        data[bits[0]] = bits[1]
+        data[k] = v
 
     return data
 
@@ -187,7 +187,7 @@ def create_oauth_headers(oauthParams):
     headerString = 'OAuth '
 
     for idx, key in enumerate(oauthp):
-        hString = key + '=\'' + urllib.quote(str(oauthp[key]), '') + '\''
+        hString = key + '="' + urllib.quote(str(oauthp[key]), '') + '"'
         if idx < len(oauthp.keys()) - 1:
             hString += ','
 
