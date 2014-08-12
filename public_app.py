@@ -130,6 +130,12 @@ def authorized():
 
     return redirect(url_for('index'))
 
+@app.route('/logout/')
+def logout():
+    session.clear()
+
+    return redirect(url_for('index'))
+
 def parse_response(text):
     """
     Parse a response from Twitter into a dict.
