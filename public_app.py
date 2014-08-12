@@ -54,7 +54,7 @@ def index():
     return render_template('index.html', **context)
 
 @app.route('/authenticate/')
-def authenticate():
+def _authenticate():
     """
     Initiate Twitter authentication.
     """
@@ -92,7 +92,7 @@ def authenticate():
     return redirect('https://api.twitter.com/oauth/authorize?oauth_token=' + session['oauth_token'])
 
 @app.route('/authorized/')
-def authorized():
+def _authorized():
     """
     Callback for Twitter authentication.
     """
@@ -131,7 +131,7 @@ def authorized():
     return redirect(url_for('index'))
 
 @app.route('/logout/')
-def logout():
+def _logout():
     session.clear()
 
     return redirect(url_for('index'))

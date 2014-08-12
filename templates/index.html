@@ -30,9 +30,9 @@
                     <div class="form-group">
                         <p>Create quote images perfect for sharing on Twitter or Facebook. Just edit the text to the left, adjust the font size if needed and then click "Save image." The image will be downloaded to your computer and from there you can use your regular Twitter client to upload it.</p>
                         {% if session.oauth_token %}
-                        Logged in as {{ session.screen_name }} (<a href="{{ url_for('logout') }}">Logout</a>) 
+                        Logged in as {{ session.screen_name }} (<a href="/logout/">Logout</a>) 
                         {% else %}
-                        <a href="{{ url_for('authenticate') }}"><i class="fa fa-twitter"></i> Login with Twitter</a>
+                        <a href="/authenticate/"><i class="fa fa-twitter"></i> Login with Twitter</a>
                         {% endif %}
                     </div>
                     <div class="form-group">
