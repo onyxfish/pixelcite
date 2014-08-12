@@ -34,3 +34,4 @@ termcolor==1.1.0
 twitter==1.14.3
 wheel==0.23.0
 wsgiref==0.1.2
+twython==3.1.2

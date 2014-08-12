@@ -71,7 +71,7 @@ def _authenticate():
     auth = twitter.get_authentication_tokens(callback_url='http://54.210.24.220/authorized/')
 
     session['oauth_token'] = auth['oauth_token']
-    session['oauth_secret'] = auth['oauth_token_secret']
+    session['oauth_token_secret'] = auth['oauth_token_secret']
 
     return redirect(auth['auth_url'])
 
