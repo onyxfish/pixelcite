@@ -3,6 +3,7 @@
 import argparse
 import binascii
 import collections
+import copy
 import datetime
 from hashlib import sha1
 import hmac
@@ -133,26 +134,29 @@ def _logout():
 def _post():
     # TKTK: check if user is logged in
 
-    url = 'https://api.twitter.com/statuses/update.json'
+    url = 'https://api.twitter.com/1.1/statuses/update.json'
     status = 'test'
 
-    params = {
+    oauth_params = {
         'oauth_consumer_key' : app_config.get_secrets()['TWITTER_CONSUMER_KEY'],
         'oauth_nonce' : str(random.randint(1, 999999999)),
         'oauth_signature_method' : 'HMAC-SHA1',
         'oauth_timestamp' : int(time.time()),
         'oauth_version' : '1.0',
-        'oauth_token' : session['oauth_token']
+        'oauth_token' : session['oauth_token'],
     }
 
-    signature = sign_request(params, 'POST', url)
+    signature_params = copy.copy(oauth_params)
+    signature_params['status'] = status
 
-    params['oauth_signature'] = signature
+    signature = sign_request(signature_params, 'POST', url)
+
+    oauth_params['oauth_signature'] = signature
 
     response = requests.post(url, data={
         'status': status,
     }, headers={
-        'Authorization': create_oauth_headers(params)
+        'Authorization': create_oauth_headers(oauth_params)
     })
 
     #data = parse_response(response.text)
