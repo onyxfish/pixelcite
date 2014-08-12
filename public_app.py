@@ -13,7 +13,7 @@ import time
 import urllib
 
 from flask import Flask, abort, redirect, render_template, request, session, url_for
-import requests
+from twython import Twython
 
 import app_config
 from render_utils import make_context
@@ -26,6 +26,8 @@ file_handler = logging.FileHandler(app_config.APP_LOG_PATH)
 file_handler.setLevel(logging.INFO)
 app.logger.addHandler(file_handler)
 app.logger.setLevel(logging.INFO)
+
+secrets = app_config.get_secrets()
 
 # Example application views
 @app.route('/test/', methods=['GET'])
@@ -58,69 +60,41 @@ def _authenticate():
     """
     Initiate Twitter authentication.
     """
-    url = 'https://api.twitter.com/oauth/request_token'
-
     session.clear()
     session['oauth_secret'] = ''
 
-    params = {
-        # TKTK: don't use IP
-        'oauth_callback' : 'http://54.210.24.220/authorized/',
-        'oauth_consumer_key' : app_config.get_secrets()['TWITTER_CONSUMER_KEY'],
-        'oauth_nonce' : str(random.randint(1, 999999999)),
-        'oauth_signature_method' : 'HMAC-SHA1',
-        'oauth_timestamp' : int(time.time()),
-        'oauth_version' : '1.0'
-    }
+    twitter = Twython(
+        secrets['TWITTER_CONSUMER_KEY'],
+        secrets['TWITTER_CONSUMER_SECRET']
+    )
 
-    signature = sign_request(params, 'POST', url)
+    auth = twitter.get_authentication_tokens(callback_url='http://54.210.24.220/authorized/')
 
-    params['oauth_signature'] = signature 
+    session['oauth_token'] = auth['oauth_token']
+    session['oauth_secret'] = auth['oauth_token_secret']
 
-    response = requests.post(url, headers={
-        'Authorization': create_oauth_headers(params)
-    })
-
-    data = parse_response(response.text)
-
-    session['oauth_token'] = data['oauth_token']
-    session['oauth_secret'] = data['oauth_token_secret']
-
-    return redirect('https://api.twitter.com/oauth/authorize?oauth_token=' + session['oauth_token'])
+    return redirect(auth['auth_url'])
 
 @app.route('/authorized/')
 def _authorized():
     """
     Callback for Twitter authentication.
     """
-    url = 'https://api.twitter.com/oauth/access_token'
-
     if request.args.get('oauth_token', '') != session['oauth_token']:
         abort(401)
             
-    params = {
-        'oauth_consumer_key' : app_config.get_secrets()['TWITTER_CONSUMER_KEY'],
-        'oauth_nonce' : str(random.randint(1, 999999999)),
-        'oauth_signature_method' : 'HMAC-SHA1',
-        'oauth_timestamp' : int(time.time()),
-        'oauth_version' : '1.0',
-        'oauth_token' : session['oauth_token']
-    }
+    twitter = Twython(
+        secrets['TWITTER_CONSUMER_KEY'],
+        secrets['TWITTER_CONSUMER_SECRET'],
+        session['oauth_token'],
+        session['oauth_token_secret']
+    )
 
-    signature = sign_request(params, 'POST', url)
+    auth = twitter.get_authorized_tokens(request.args.get('oauth_verifier'))
 
-    params['oauth_signature'] = signature
-
-    response = requests.post(url, data={
-        'oauth_verifier': request.args.get('oauth_verifier')
-    }, headers={
-        'Authorization': create_oauth_headers(params)
-    })
-
-    data = parse_response(response.text)
-
-    session['screen_name'] = data['screen_name']
-    session['oauth_token'] = data['oauth_token']
+    session['oauth_token'] = auth['oauth_token']
+    session['oauth_token_secret'] = auth['oauth_token_secret']
+    session['screen_name'] = auth['screen_name']
 
     return redirect(url_for('index'))
 
@@ -134,34 +108,18 @@ def _logout():
 def _post():
     # TKTK: check if user is logged in
 
-    url = 'https://api.twitter.com/1.1/statuses/update.json'
+    twitter = Twython(
+        secrets['TWITTER_CONSUMER_KEY'],
+        secrets['TWITTER_CONSUMER_SECRET'],
+        session['oauth_token'],
+        session['oauth_token_secret']
+    )
+
     status = 'test'
 
-    oauth_params = {
-        'oauth_consumer_key' : app_config.get_secrets()['TWITTER_CONSUMER_KEY'],
-        'oauth_nonce' : str(random.randint(1, 999999999)),
-        'oauth_signature_method' : 'HMAC-SHA1',
-        'oauth_timestamp' : int(time.time()),
-        'oauth_version' : '1.0',
-        'oauth_token' : session['oauth_token'],
-    }
+    twitter.update_status(status=status)
 
-    signature_params = copy.copy(oauth_params)
-    signature_params['status'] = status
-
-    signature = sign_request(signature_params, 'POST', url)
-
-    oauth_params['oauth_signature'] = signature
-
-    response = requests.post(url, data={
-        'status': status,
-    }, headers={
-        'Authorization': create_oauth_headers(oauth_params)
-    })
-
-    #data = parse_response(response.text)
-
-    return response.text
+    return redirect(url_for('index'))
 
 def parse_response(text):
     """
