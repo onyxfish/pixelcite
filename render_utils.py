@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-import glob
-import os
-import time
 import urllib
 
 from cssmin import cssmin
@@ -43,33 +40,23 @@ class Includer(object):
         return relative_path
 
     def render(self, path):
-        if getattr(g, 'compile_includes', False):
-            if path in g.compiled_includes:
-                timestamp_path = g.compiled_includes[path]
-            else:
-                # Add a timestamp to the rendered filename to prevent caching
-                timestamp = int(time.time())
-                front, back = path.rsplit('.', 1)
-                timestamp_path = '%s.%i.%s' % (front, timestamp, back)
+        if app_config.DEPLOYMENT_TARGET:
+            if getattr(g, 'compile_includes', False):
+                out_path = 'www/%s' % path
 
-                # Delete old rendered versions, just to be tidy
-                old_versions = glob.glob('www/%s.*.%s' % (front, back))
+                if path not in g.compiled_includes:
+                    print 'Rendering %s' % out_path
 
-                for f in old_versions:
-                    os.remove(f)
+                    with open(out_path, 'w') as f:
+                        f.write(self._compress().encode('utf-8'))
 
-            out_path = 'www/%s' % timestamp_path
+                # See "fab render"
+                g.compiled_includes.append(path)
 
-            if path not in g.compiled_includes:
-                print 'Rendering %s' % out_path
+            url = '%s/%s' % (app_config.S3_BASE_URL, path)
+            response = self.tag_string % url 
 
-                with open(out_path, 'w') as f:
-                    f.write(self._compress().encode('utf-8'))
-
-            # See "fab render"
-            g.compiled_includes[path] = timestamp_path
-
-            markup = Markup(self.tag_string % self._relativize_path(timestamp_path))
+            markup = Markup(response)
         else:
             response = ','.join(self.includes)
 
