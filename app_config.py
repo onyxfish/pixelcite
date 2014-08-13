@@ -77,7 +77,7 @@ COPY_PATH = 'data/copy.xlsx'
 """
 SHARING
 """
-SHARE_URL = 'http://%s/' % (PRODUCTION_S3_BUCKETS[0])
+SHARE_URL = 'http://pixelcite.com/'
 
 """
 ADS
@@ -87,9 +87,8 @@ ADS
 SERVICES
 """
 GOOGLE_ANALYTICS = {
-    'ACCOUNT_ID': 'UA-5828686-4',
-    'DOMAIN': PRODUCTION_S3_BUCKETS[0],
-    'TOPICS': '' # e.g. '[1014,3,1003,1002,1001]'
+    'ACCOUNT_ID': 'UA-53769241-1',
+    'DOMAIN': 'pixelcite.com'
 }
 
 """
