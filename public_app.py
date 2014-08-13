@@ -13,6 +13,7 @@ import app_config
 from render_utils import make_context
 
 app = Flask(__name__)
+app.debug = app_config.DEBUG
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.secret_key = app_config.get_secrets()['SESSION_KEY']
 
@@ -143,4 +144,4 @@ if __name__ == '__main__':
     if args.port:
         server_port = int(args.port)
 
-    app.run(host='0.0.0.0', port=server_port, debug=app_config.DEBUG)
+    app.run(host='0.0.0.0', port=server_port)

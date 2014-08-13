@@ -8,6 +8,7 @@ from render_utils import make_context, smarty_filter, urlencode_filter
 import static
 
 app = Flask(__name__)
+app.debug = app_config.DEBUG
 
 app.jinja_env.filters['smarty'] = smarty_filter
 app.jinja_env.filters['urlencode'] = urlencode_filter
@@ -34,4 +35,4 @@ if __name__ == '__main__':
     if args.port:
         server_port = int(args.port)
 
-    app.run(host='0.0.0.0', port=server_port, debug=app_config.DEBUG)
+    app.run(host='0.0.0.0', port=server_port)
