@@ -111,8 +111,8 @@ def _post():
         session['oauth_token_secret']
     )
 
-    status = 'test'
-    image = open('www/assets/logo36.png', 'rb')
+    status = request.args.get('status', '')
+    image = request.args.get('image', '')
 
     twitter.update_status_with_media(status=status, media=image)
 
