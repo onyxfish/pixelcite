@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+from cStringIO import StringIO
 import datetime
 import logging
 
@@ -114,7 +115,9 @@ def _post():
     status = request.form.get('status', '')
     image = request.form.get('image', '')
 
-    twitter.update_status_with_media(status=status, media=image)
+    image_io = StringIO(image)
+
+    twitter.update_status_with_media(status=status, media=image_io)
 
     return redirect(url_for('index'))
 
