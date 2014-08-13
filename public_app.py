@@ -90,16 +90,20 @@ def _authorized():
 
     return redirect(url_for('index'))
 
-@app.route('/logout/')
+@app.route('/logout/', methods=['GET'])
 def _logout():
+    """
+    Clear current Twitter credentials.
+    """
     session.clear()
 
     return redirect(url_for('index'))
 
-@app.route('/post/')
+@app.route('/post/', methods=['POST'])
 def _post():
-    # TKTK: check if user is logged in
-
+    """
+    Post an image to Twitter.
+    """
     twitter = Twython(
         secrets['TWITTER_CONSUMER_KEY'],
         secrets['TWITTER_CONSUMER_SECRET'],

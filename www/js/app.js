@@ -1,5 +1,6 @@
 var $text = null;
 var $save = null;
+var $tweet = null;
 var $poster = null;
 var $font_size = null;
 var $source = null;
@@ -12,9 +13,13 @@ var quotes = [
     }
 ];
 
+/*
+ * On page load.
+ */
 var onDocumentReady = function() {
     $text = $('.poster blockquote p, .source');
     $save = $('#save');
+    $tweet = $('#tweet');
     $poster = $('.poster');
     $font_size = $('#fontsize');
     $source = $('.source');
@@ -30,7 +35,13 @@ var onDocumentReady = function() {
     $source.html('&mdash;&thinsp;' + quote.source);
     process_text();
 
-    $save.on('click', save_image);
+    $save.on('click', function() {
+        get_image(save_image);
+    });
+
+    $tweet.on('click', function() {
+        get_image(tweet);
+    });
 
     $font_size.on('change', function(){
         adjust_font_size($(this).val());
@@ -46,13 +57,43 @@ var onDocumentReady = function() {
  * Smarten quotes.
  */
 function smarten(a) {
-    a = a.replace(/(^|[-\u2014\s(\["])'/g, "$1\u2018");       // opening singles
-    a = a.replace(/'/g, "\u2019");                            // closing singles & apostrophes
-    a = a.replace(/(^|[-\u2014/\[(\u2018\s])"/g, "$1\u201c"); // opening doubles
-    a = a.replace(/"/g, "\u201d");                            // closing doubles
-    a = a.replace(/--/g, "\u2014");                           // em-dashes
-    a = a.replace(/ \u2014 /g, "\u2009\u2014\u2009");         // full spaces wrapping em dash
+    // opening singles
+    a = a.replace(/(^|[-\u2014\s(\["])'/g, "$1\u2018");
+    // closing singles & apostrophes
+    a = a.replace(/'/g, "\u2019");
+    // opening doubles
+    a = a.replace(/(^|[-\u2014/\[(\u2018\s])"/g, "$1\u201c");
+    // closing doubles
+    a = a.replace(/"/g, "\u201d");
+    // em-dashes
+    a = a.replace(/--/g, "\u2014");
+    // full spaces wrapping em dash
+    a = a.replace(/ \u2014 /g, "\u2009\u2014\u2009");
+    
     return a;
+}
+
+/*
+ * POST without a pre-generated form.
+ */
+function post(path, params) {
+    var $form = $('<form></form>');
+    $form.attr('method', 'post');
+    $form.attr('action', path);
+
+    for (var key in params) {
+        if (params.hasOwnProperty(key)) {
+            var $hiddenField = $('<input />');
+            $hiddenField.attr('type', 'hidden');
+            $hiddenField.attr('name', key);
+            $hiddenField.attr('value', params[key]);
+
+            $form.append($hiddenField);
+         }
+    }
+
+    $('body').append($form);
+    $form.submit();
 }
 
 /*
@@ -73,36 +114,51 @@ function process_text(){
     });
 }
 
-function save_image(){
-    // first check if the quote actually fits
-
+/*
+ * Gets data for the image calls a callback when its ready
+ */
+function get_image(callback) {
     if (($source.offset().top + $source.height()) > $logo_wrapper.offset().top){
         alert("Your quote doesn't quite fit. Shorten the text or choose a smaller font-size.");
         return;
     }
 
-    $('canvas').remove();
     process_text();
 
     html2canvas($poster, {
-      onrendered: function(canvas) {
-        document.body.appendChild(canvas);
-        window.oCanvas = document.getElementsByTagName("canvas");
-        window.oCanvas = window.oCanvas[0];
-        var strDataURI = window.oCanvas.toDataURL();
+        onrendered: function(canvas) {
+            var dataUrl = canvas.toDataURL();
 
-        var quote = $('blockquote').text().split(' ', 5);
-        var filename = slugify(quote.join(' '));
+            callback(dataUrl);
+        }
+    });
 
-        var a = $("<a>").attr("href", strDataURI).attr("download", "quote-" + filename + ".png").appendTo("body");
+}
 
-        a[0].click();
+/*
+ *Downloads the image.
+ */
+function save_image(dataUrl) {
+    var quote = $('blockquote').text().split(' ', 5);
+    var filename = slugify(quote.join(' '));
 
-        a.remove();
+    var a = $('<a>').attr('href', dataUrl).attr('download', 'quote-' + filename + '.png').appendTo('body');
 
-        $('#download').attr('href', strDataURI).attr('target', '_blank');
-        $('#download').trigger('click');
-      }
+    a[0].click();
+
+    a.remove();
+
+    $('#download').attr('href', strDataURI).attr('target', '_blank');
+    $('#download').trigger('click');
+}
+
+/*
+ * Tweet the image.
+ */
+function tweet(dataUrl) {
+    post('/post/', {
+        'status': 'testpost',
+        'image': dataUrl
     });
 }
 
