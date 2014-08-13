@@ -121,9 +121,17 @@ def _post():
 
     image_io = StringIO(base64.b64decode(image))
 
-    twitter.update_status_with_media(status=status, media=image_io)
+    response = twitter.update_status_with_media(
+        status=status,
+        media=image_io
+    )
 
-    return redirect(url_for('index'))
+    screen_name = response['user']['screen_name']
+    tweet_id = response['id_str']
+
+    tweet_url = 'https://twitter.com/%s/status/%s' % (screen_name, tweet_id)
+
+    return redirect(tweet_url)
 
 # Boilerplate
 if __name__ == '__main__':
