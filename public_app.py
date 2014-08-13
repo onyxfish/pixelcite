@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+import base64
 from cStringIO import StringIO
 import datetime
 import logging
@@ -105,6 +106,12 @@ def _post():
     """
     Post an image to Twitter.
     """
+    status = request.form.get('status', '')
+    image = request.form.get('image', '')
+
+    if not image:
+        abort(400);
+
     twitter = Twython(
         secrets['TWITTER_CONSUMER_KEY'],
         secrets['TWITTER_CONSUMER_SECRET'],
@@ -112,10 +119,7 @@ def _post():
         session['oauth_token_secret']
     )
 
-    status = request.form.get('status', '')
-    image = request.form.get('image', '')
-
-    image_io = StringIO(image)
+    image_io = StringIO(base64.b64decode(image))
 
     twitter.update_status_with_media(status=status, media=image_io)
 
