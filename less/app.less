@@ -14,263 +14,64 @@ body {
 	min-width: 680px;
 }
 
-canvas {
-	display: none;
-	background: #333;
-}
-
-.content {
-	display: table;
-	width: 100%;
-	max-width: 1200px;
-	min-width: 640px;
-	margin: 0 auto;
-
-	.poster-wrapper,
-	.container {
-		display: table-cell;
-		vertical-align: top;
-	}
-
-	.poster-wrapper {
-		width: 640px;
-	}
-
-	@media screen and (max-width: @screen-sm-max){
-		display: block;
-
-		.poster-wrapper,
-		.container {
-			display: block;
-		}
-	}
-
-	@media screen and (max-width: @screen-xs-max){
-		.controls-wrapper {
-			font-size: 250%;
-			.btn {
-				font-size: 100%;
-				height: 88px;
-				min-width: 88px;
-			}
-		}
-
-		#fontsize {
-			display: block;
-			width: 90%;
-		}
-	}
-
-	.touch & {
-		input[type="range"]{
-		    background: #fff;
-		    width: 100%;
-		    height: 88px;
-		    -webkit-appearance: none;
-		    border-radius: 8px;
-		    -moz-border-radius: 8px;
-		    -wekkit-border-radius: 8px;
-		    border: 1px solid #ddd;
-		}
-
-
-		input[type="range"]::-webkit-slider-thumb{
-		   -webkit-appearance:none !important;
-		   width:88px;
-		   height:88px;
-		   -webkit-appearance: none;
-		    border-radius: 8px;
-		    -moz-border-radius: 8px;
-		    -wekkit-border-radius: 8px;
-		    border:none;
-		    background: #aaa;
-		 }
-
-		 @media screen and (min-width: @screen-sm){
-		 	input[type="range"]{
-		 		height: 44px;
-		 	}
-
-		 	input[type="range"]::-webkit-slider-thumb {
-		 		width:44px;
-		 		height:44px;
-		 	}
-		 }
-	}
-}
-
-.controls-wrapper {
-	padding-top: @line-height-computed;
-
-	small {
-		font-size: 100%;
-		opacity: 0.5;
-	}
-
-	.btn-group,
-	.btn-group + .btn {
-		margin-right: @grid-gutter-width / 2;
-	}
-
-	.btn-group-vertical .btn {
-		text-align: left;
-	}
-
-	.form-group,
-	.btn-group {
-		margin-bottom: @line-height-computed / 2;
-	}
-
-	label {
-		display: block;
-	}
-}
-
-header {
+#header {
 	background: @gray-lighter;
-	margin: 0;
-	padding-top: 25px;
-    padding-right: @grid-gutter-width / 2;
-    padding-bottom: 0px;
-    padding-left: @grid-gutter-width / 2;
+    margin-top: @grid-gutter-width;
+    margin-bottom: @grid-gutter-width * 0.5;
 	color: #333;
 
-	a {
-		color: @gray-lighter;
-	}
+    img {
+        vertical-align: top;
+        margin-top: 2px;
+        margin-right: 4px;
+    }
 
-	a:hover {
-		color: @gray;
-		text-decoration: none;
-	}
+    h1 {
+        display: inline-block;
+        margin: 0;
+        -webkit-font-smoothing: antialiased;
+    }
 
-	.icon-wrapper {
-		position: fixed;
-		top: 0;
-		left: 0;
-		padding: 30px 15px 0 15px;
-		min-height: 89px;
-		border-style: solid;
-		border-color: @gray-lighter;
-		border-width: 0 1px 0 0;
-		font-size: 35px;
-	}
-
-	.header-wrapper {
-		max-width: 1200px;
-		margin: 0 auto;
-		padding: 0 @grid-gutter-width / 2;
-
-        img {
-            vertical-align: top;
-            margin-right: 5px;
-        }
-
-        h1 {
-            display: inline-block;
-            font-weight: normal;
-            line-height: 32px;
-            margin: 0;
-            -webkit-font-smoothing: antialiased;
-            font-family: @font-family-serif;
-        }
-
-        .login-wrapper {
-            float: right;
-        }
-	}
+    .login-wrapper {
+        float: right;
+    }
 }
 
+.poster-wrapper,
+.form-wrapper {
+    padding-left: 0px;
+}
 
 .poster {
-	height: 640px;
+	height: 360px;
 	width: 640px;
 	background: #fff;
 	margin: @line-height-computed;
 	position: relative;
-	padding: @grid-gutter-width * 2;
 	font-size: 32px;
 	line-height: 1 !important;
 	overflow: hidden;
+    padding-left: @grid-gutter-width;
+    padding-top: @grid-gutter-width;
 
-    .logo-wrapper {
-        .logo {
-            display: inline-block !important;
-            border: none;
-
-            .sixteen-by-nine& {
-                height: 40px;
-                width: auto;
-            }
-        }
+    .left-quote {
+        content:"\201C";
+        display: block;
+        position: absolute;
+        top: @grid-gutter-width;
+        left: @grid-gutter-width;
+        font-weight: 700;
+        margin-left: -0.55em;
     }
-
-	&.sixteen-by-nine {
-		height: 360px;
-		padding: @grid-gutter-width;
-
-		.quote& {
-			.left-quote {
-				top: @grid-gutter-width;
-				left: @grid-gutter-width;
-			}
-		}
-
-		blockquote {
-			margin-bottom: 20px;
-		}
-
-		.logo-wrapper {
-			padding: @grid-gutter-width;
-
-			img {
-				width: 150px;
-			}
-
-			.poster-music& {
-				padding-bottom: @grid-gutter-width - 10;
-			}
-		}
-
-		p.source {
-			font-size: @font-size-base * 1.3;
-		}
-
-		.show-credit {
-			font-size: @font-size-base * 1.1;
-		}
-	}
-
-	.quote& {
-		.left-quote {
-			content:"\201C";
-			display: block;
-			position: absolute;
-			top: @grid-gutter-width * 2;
-			left: @grid-gutter-width * 2;
-			font-weight: 700;
-			margin-left: -0.55em;
-		}
-	}
-
-	.left-quote,
-	.right-quote {
-		display: none;
-	}
 
 	blockquote {
 		padding: 0;
-		margin: 0 0 @line-height-computed * 2;
+		margin: 0 0 20px;
 		border-left: none;
 		font-size: inherit;
 		line-height: 100%;
 		font-weight: bold;
 		display: block;
-
-		&:focus {
-			border: none;
-			outline: none;
-		}
 
 		p {
 			font-size: inherit;
@@ -283,46 +84,18 @@ header {
 			}
 		}
 
-		&:last-child {
-			color: red;
-		}
-
-		.quote& {
-
-			p:last-child:after {
-				content:"\201D";
-				font-weight: 700;
-			}
-
-		}
-
-		.show-credit {
-			line-height: 1.2 !important;
-		}
+        p:last-child:after {
+            content:"\201D";
+            font-weight: 700;
+        }
 	}
 
-	p.source {
-		font-size: @font-size-base *1.5;
+	p.attribution {
+		font-size: @font-size-base * 1.3;
 		font-weight: normal;
 		line-height: 1.3;
 		display: block;
 		margin-top: 0;
-	}
-
-	.show-credit {
-		display: block;
-		text-transform: uppercase;
-		font-size: @font-size-base*1.2;
-		margin-top: 5px;
-		color: #999;
-	}
-
-	p.source,
-	.show-credit {
-		&:focus {
-			border: none;
-			outline: none;
-		}
 	}
 
 	.logo-wrapper {
@@ -336,5 +109,13 @@ header {
 		margin: 0;
 		font-size: 46px;
 		background: #fff;
+
+        .logo {
+            display: inline-block !important;
+            border: none;
+
+            height: 40px;
+            width: auto;
+        }
 	}
 }

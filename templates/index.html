@@ -1,74 +1,76 @@
 {% extends '_base.html' %}
 
 {% block outer_content %}
-<header>
-    <div class="header-wrapper">
-        <img src="assets/logo36.png" />
+<div id="header" class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <img src="assets/logo36.png" />
 
-        <h1>pixelcite <small>share quotes on Twitter</small></h1>
+            <h1>Pixelcite <small>Beautiful quotes for Twitter</small></h1>
 
-        <div class="login-wrapper">
-            {% if session.oauth_token %}
-            Logged in as {{ session.screen_name }} (<a href="/logout/">Logout</a>) 
-            {% else %}
-            <a class="btn btn-primary" href="/authenticate/"><i class="fa fa-twitter"></i> Login with Twitter</a>
-            {% endif %}
+            <div class="login-wrapper">
+                {% if session.oauth_token %}
+                Logged in as {{ session.screen_name }} (<a href="/logout/">Logout</a>) 
+                {% else %}
+                <a class="btn btn-primary" href="/authenticate/"><i class="fa fa-twitter"></i> Login with Twitter</a>
+                {% endif %}
+            </div>
         </div>
     </div>
-</header>
+</div>
 
-<div class="content">
-    <div class="poster-wrapper">
-        <div class="poster quote sixteen-by-nine">
-            <span class="left-quote">&ldquo;</span>
-            <blockquote><p></p></blockquote>
+<div class="container">
+    <div class="row">
+        <div class="poster-wrapper col-md-7">
+            <div class="poster">
+                <span class="left-quote">&ldquo;</span>
+                <blockquote><p></p></blockquote>
 
-            <p class="source"></p>
-            <p class="show-credit"></p>
+                <p class="attribution"></p>
 
-            <p class="logo-wrapper">
-                <img class="logo" src="assets/logo36.png" />
-            </p>
+                <p class="logo-wrapper">
+                    <img class="logo" src="assets/logo36.png" />
+                </p>
+            </div>
         </div>
-    </div>
-    <div class="container">
-        <div class="row">
-            <div class="form controls col-md-12">
-                <div class="controls-wrapper">
-                    <div class="form-group">
-                        <label for="quotetext">Quote</label>
-                        <textarea id="quote" name="quote"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="author">Author</label>
-                        <input id="author" name="author" />
-                    </div>
-                    <div class="form-group">
-                        <label for="source">Source</label>
-                        <input id="source" name="source" />
-                    </div>
-                    <div class="form-group">
-                        <label for="comment">Comment</label>
-                        <input id="comment" name="comment">
-                    </div>
-                    <div class="form-group">
-                        <label for="fontsize">Font Size</label>
-                        <input id="fontsize" name="fontsize" type="range" min="24" max="120" value="32" />
-                    </div>
-                    <div class="form-group">
-                        <label for="url">URL</label>
-                        <input id="url" name="url" type="url" />
-                    </div>
-                    <div class="form-group">
-                        {% if session.oauth_token %}
-                        <button id="tweet" class="btn btn-lg btn-primary"><i class="fa fa-twitter"></i> Tweet</button>
-                        {% else %}
-                        <a class="btn btn-lg btn-primary" href="/authenticate/"><i class="fa fa-twitter"></i> Login to Tweet</a>
-                        {% endif %}
-                        <button id="save" class="btn btn-lg btn-default"><i class="fa fa-download"></i> Save image</button>
-                    </div>
+
+        <div class="form-wrapper col-md-5">
+            <div class="controls-wrapper">
+            <form role="form">
+                <div class="form-group">
+                    <label for="quotetext">Quote</label>
+                    <textarea id="quote" name="quote" class="form-control"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="author">Author</label>
+                    <input id="author" name="author" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="source">Source</label>
+                    <input id="source" name="source" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="comment">Comment</label>
+                    <input id="comment" name="comment" class="form-control" >
+                </div>
+                <div class="form-group">
+                    <label for="fontsize">Font Size</label>
+                    <input id="fontsize" name="fontsize" class="form-control"  type="range" min="24" max="120" value="32" />
+                </div>
+                <div class="form-group">
+                    <label for="url">URL</label>
+                    <input id="url" name="url" type="url" class="form-control"  />
+                </div>
+                <div class="form-group">
+                    {% if session.oauth_token %}
+                    <button id="tweet" class="btn btn-lg btn-primary"><i class="fa fa-twitter"></i> Tweet</button>
+                    {% else %}
+                    <a class="btn btn-lg btn-primary" href="/authenticate/"><i class="fa fa-twitter"></i> Login to Tweet</a>
+                    {% endif %}
+                    <button id="save" class="btn btn-lg btn-default"><i class="fa fa-download"></i> Save image</button>
                 </div>
             </div>
+            </form>
         </div>
     </div>
 </div>

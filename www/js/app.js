@@ -25,7 +25,7 @@ var quotes = [
  */
 var onDocumentReady = function() {
     $display_quote = $('.poster blockquote p');
-    $display_attribution = $('.source');
+    $display_attribution = $('.attribution');
 
     $save = $('#save');
     $tweet = $('#tweet');
@@ -147,7 +147,7 @@ var saveImage = function(dataUrl) {
 
     a.remove();
 
-    $('#download').attr('href', strDataURI).attr('target', '_blank');
+    $('#download').attr('href', dataUrl).attr('target', '_blank');
     $('#download').trigger('click');
 }
 
