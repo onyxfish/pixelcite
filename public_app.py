@@ -1,16 +1,8 @@
 #!/usr/bin/env python
 
 import argparse
-import binascii
-import collections
-import copy
 import datetime
-from hashlib import sha1
-import hmac
 import logging
-import random
-import time
-import urllib
 
 from flask import Flask, abort, redirect, render_template, request, session, url_for
 from twython import Twython
@@ -116,69 +108,11 @@ def _post():
     )
 
     status = 'test'
+    image = open('www/assets/logo36.png', 'rb')
 
-    twitter.update_status(status=status)
+    twitter.update_status_with_media(status=status, media=image)
 
     return redirect(url_for('index'))
-
-def parse_response(text):
-    """
-    Parse a response from Twitter into a dict.
-    """
-    parts = text.split('&')
-
-    data = {}
-
-    for p in parts:
-        k, v = p.split('=')
-
-        data[k] = v
-
-    return data
-
-def sign_request(parameters, method, baseURL):
-    """
-    Sign an oauth request for Twitter.
-    """
-    baseURL = urllib.quote(baseURL, '')
-
-    p = collections.OrderedDict(sorted(parameters.items(), key=lambda t: t[0]))
-
-    requestString = method + '&' + baseURL + '&'
-    parameterString = ''
-
-    for idx, key in enumerate(p.keys()):
-        paramString = key + '=' + urllib.quote(str(p[key]), '')
-        if idx < len(p.keys()) - 1:
-            paramString += '&'
-
-        parameterString += paramString
-
-    result = requestString + urllib.quote(parameterString, '')
-
-    signingKey = app_config.get_secrets()['TWITTER_CONSUMER_SECRET'] + '&' + session['oauth_secret']
-
-    hashed = hmac.new(signingKey, result, sha1)
-    signature = binascii.b2a_base64(hashed.digest())[:-1]
-
-    return signature
-
-def create_oauth_headers(oauthParams):
-    """
-    Create a header string containing OAuth data.
-    """
-    oauthp = collections.OrderedDict(sorted(oauthParams.items(), key=lambda t: t[0]))
-
-    headerString = 'OAuth '
-
-    for idx, key in enumerate(oauthp):
-        hString = key + '="' + urllib.quote(str(oauthp[key]), '') + '"'
-        if idx < len(oauthp.keys()) - 1:
-            hString += ','
-
-        headerString += hString
-
-    return headerString
 
 # Boilerplate
 if __name__ == '__main__':
