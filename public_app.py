@@ -111,8 +111,8 @@ def _post():
         session['oauth_token_secret']
     )
 
-    status = request.args.get('status', '')
-    image = request.args.get('image', '')
+    status = request.form.get('status', '')
+    image = request.form.get('image', '')
 
     twitter.update_status_with_media(status=status, media=image)
 

@@ -158,7 +158,7 @@ function save_image(dataUrl) {
 function tweet(dataUrl) {
     post('/post/', {
         'status': 'testpost',
-        'image': dataUrl
+        'image': dataUrl.split(',')[1]
     });
 }
 
