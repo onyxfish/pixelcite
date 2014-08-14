@@ -157,7 +157,7 @@ var getImage = function(callback) {
  * Tweet the image.
  */
 var tweet = function(dataUrl) {
-    var status = $display_status.text(status);
+    var status = $display_status.val(status);
 
     ga('send', 'event', 'pixelcite', 'tweet');
 
