@@ -28,7 +28,7 @@ PRODUCTION_S3_BUCKETS = ['media.pixelcite.com']
 STAGING_S3_BUCKETS = []
 ASSETS_S3_BUCKET = 'assets.pixelcite.com'
 
-PRODUCTION_SERVERS = ['54.210.24.220']
+PRODUCTION_SERVERS = ['pixelcite.com']
 STAGING_SERVERS = []
 
 # Should code be deployed to the web/cron servers?

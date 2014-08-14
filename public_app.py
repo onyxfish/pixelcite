@@ -63,7 +63,7 @@ def _authenticate():
         secrets['TWITTER_CONSUMER_SECRET']
     )
 
-    auth = twitter.get_authentication_tokens(callback_url='http://54.210.24.220/authorized/')
+    auth = twitter.get_authentication_tokens(callback_url='%s/authorized/' % app_config.SERVER_BASE_URL)
 
     session['oauth_token'] = auth['oauth_token']
     session['oauth_token_secret'] = auth['oauth_token_secret']
