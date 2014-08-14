@@ -34,13 +34,10 @@
     <script type="text/javascript" src="{{ S3_BASE_URL }}/js/lib/html2canvas.min.js"></script>
 
     {{ JS.push('js/lib/jquery.js') }}
-    {{ JS.push('js/lib/underscore.js') }}
     {{ JS.push('js/lib/bootstrap.js') }}
-    {{ JS.push('js/lib/moment.js') }}
+    {{ JS.push('js/lib/jquery.cookie.js') }}
     {{ JS.push('js/app_config.js') }}
-    {{ JS.push('js/copy.js') }}
     {{ JS.push('js/console.js') }}
-    {{ JS.push('js/templates.js') }}
     {{ JS.push('js/app.js') }}
     {% block extra_foot_js %}{% endblock extra_foot_js %}
     {{ JS.render('js/app-footer.min.js') }}

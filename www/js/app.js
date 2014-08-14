@@ -22,13 +22,13 @@ var $login = null;
 var $tweet = null;
 var $save = null;
 
-var quotes = [
+var exampleQuotes = [
     {
         'comment': 'One of my favorite LOTR quotes.',
         'quote': 'Not all those who wander are lost.',
         'source': 'J.R.R. Tolkien, <strong>The Lord of the Rings</strong>',
         'url': 'http://www.amazon.com/Lord-Rings-50th-Anniversary-Vol/dp/0618640150/ref=sr_1_3?s=books&ie=UTF8&qid=1408030941&sr=1-3&keywords=lord+of+the+rings',
-        'size': 48
+        'fontSize': 48
     }
 ];
 
@@ -66,21 +66,64 @@ var onDocumentReady = function() {
     $tweet.on('click', onTweetClick);
     $save.on('click', onSaveClick);
 
-    // Setup initial quote
-    var quote = quotes[Math.floor(Math.random() * quotes.length)];
+    var quote = loadQuote();   
     
-    if (quote.size) {
-        adjustFontSize(quote.size);
+    if (!quote) {
+        quote = loadExampleQuote();
     }
 
-    $quote.val(quote.quote);
-    $source.val(quote.source);
-    $comment.val(quote.comment);
-    $url.val(quote.url);
+    setQuote(quote);
+}
 
+/*
+ * Load an example quote.
+ */
+var loadExampleQuote = function() {
+    return exampleQuotes[Math.floor(Math.random() * exampleQuotes.length)];
+}
+
+/*
+ * Load quote from cookies.
+ */
+var loadQuote = function() {
+    if ($.cookie('comment') === undefined) {
+        return null;
+    }
+
+    return {
+        'comment': $.cookie('comment'),
+        'quote': $.cookie('quote'),
+        'source': $.cookie('source'),
+        'url': $.cookie('url'),
+        'fontSize': $.cookie('fontSize')
+    }
+}
+
+/*
+ * Save quote to cookies.
+ */
+var saveQuote = function() {
+    $.cookie('comment', $comment.val());
+    $.cookie('quote', $quote.val());
+    $.cookie('source', $source.val());
+    $.cookie('url', $url.val());
+    $.cookie('fontSize', $fontSize.val());
+}
+
+/*
+ * Update form with quote data.
+ */
+var setQuote = function(quote) {
+    $comment.val(quote['comment']);
+    $quote.val(quote['quote']);
+    $source.val(quote['source']);
+    $url.val(quote['url']);
+    $fontSize.val(quote['fontSize']);
+
+    $comment.trigger('keyup');
     $quote.trigger('keyup');
     $source.trigger('keyup');
-    $comment.trigger('keyup');
+    $fontSize.trigger('change');
 }
 
 /*
@@ -190,16 +233,6 @@ var saveImage = function(dataUrl) {
     $('#download').trigger('click');
 }
 
-var adjustFontSize = function(size) {
-    var fontSize = size.toString() + 'px';
-
-    $poster.css('font-size', fontSize);
-    
-    if ($fontSize.val() !== size){
-        $fontSize.val(size);
-    };
-}
-
 /*
  * Process urls and apply affiliate codes.
  */
@@ -284,22 +317,30 @@ var updateCount = function() {
 
 var onCommentKeyUp = function() {
     updateStatus();
+    saveQuote();
 }
 
 var onQuoteKeyUp = function() {
     $display_quote.text(smarten($(this).val()));
+    saveQuote();
 }
 
 var onSourceKeyUp = function() {
     updateAttribution();
+    saveQuote();
 }
 
 var onUrlKeyUp = function () {
     updateStatus();
+    saveQuote();
 }
 
 var onFontSizeChange = function() {
-    adjustFontSize($(this).val());
+    var fontSize = $fontSize.val().toString() + 'px';
+
+    $poster.css('font-size', fontSize);
+    
+    saveQuote();
 }
 
 var onLoginClick = function() {
