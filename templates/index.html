@@ -52,7 +52,7 @@
 
         <div class="poster-wrapper col-md-7">
             <div class="status pull-right">
-                <label class="user" for="text">{% if session.screen_name %}@{{ screen_name }}{% else %}@user{% endif %}</label>
+                <label class="user" for="text">{% if session.screen_name %}@{{ session.screen_name }}{% else %}@user{% endif %}</label>
                 <textarea class="text form-control" name="text" disabled="disabled"></textarea>
                 <div class="count"></div>
             </div>
