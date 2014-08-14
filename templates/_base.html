@@ -27,7 +27,8 @@
     {% block outer_content %}
     {% endblock outer_content %}
 
-    <script type="text/javascript" src="js/lib/html2canvas.js"></script>
+    <script type="text/javascript" src="{{ S3_BASE_URL }}/js/lib/html2canvas.js"></script>
+
     {{ JS.push('js/lib/jquery.js') }}
     {{ JS.push('js/lib/underscore.js') }}
     {{ JS.push('js/lib/bootstrap.js') }}
