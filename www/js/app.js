@@ -1,5 +1,6 @@
 var $display_quote = null;
 var $display_attribution = null;
+var $display_status = null;
 
 var $save = null;
 var $tweet = null;
@@ -14,9 +15,10 @@ var $comment = null;
 
 var quotes = [
     {
-        "quote": "Not all those who wander are lost.",
-        "author": "J.R.R. Tolkien",
-        "source": "The Lord of the Rings"
+        'quote': 'Not all those who wander are lost.',
+        'author': 'J.R.R. Tolkien',
+        'source': 'The Lord of the Rings',
+        'comment': 'One of my favorite LOTR quotes.'
     }
 ];
 
@@ -26,6 +28,7 @@ var quotes = [
 var onDocumentReady = function() {
     $display_quote = $('.poster blockquote p');
     $display_attribution = $('.attribution');
+    $display_status = $('.status .text');
 
     $save = $('#save');
     $tweet = $('#tweet');
@@ -42,6 +45,7 @@ var onDocumentReady = function() {
     $quote.on('keyup', onQuoteKeyUp);
     $author.on('keyup', onAuthorKeyUp);
     $source.on('keyup', onSourceKeyUp);
+    $comment.on('keyup', onCommentKeyUp);
 
     $tweet.on('click', onTweetClick);
     $save.on('click', onSaveClick);
@@ -57,9 +61,11 @@ var onDocumentReady = function() {
     $quote.val(quote.quote);
     $author.val(quote.author);
     $source.val(quote.source);
+    $comment.val(quote.comment);
 
     $quote.trigger('keyup');
     $author.trigger('keyup');
+    $comment.trigger('keyup');
 }
 
 /*
@@ -120,7 +126,7 @@ var slugify = function(text){
  */
 var getImage = function(callback) {
     if (($source.offset().top + $source.height()) > $logo_wrapper.offset().top){
-        alert("Your quote doesn't quite fit. Shorten the text or choose a smaller font-size.");
+        alert('Your quote doesn\'t quite fit. Shorten the text or choose a smaller font-size.');
         return;
     }
 
@@ -193,6 +199,12 @@ var updateAttribution = function() {
     $display_attribution.html(attr);
 }
 
+var updateStatus = function() {
+    var status = $comment.val();
+
+    $display_status.text(status);
+}
+
 var onQuoteKeyUp = function() {
     $display_quote.text(smarten($(this).val()));
 }
@@ -203,6 +215,10 @@ var onAuthorKeyUp = function() {
 
 var onSourceKeyUp = function() {
     updateAttribution();
+}
+
+var onCommentKeyUp = function() {
+    updateStatus();
 }
 
 var onTweetClick = function() {

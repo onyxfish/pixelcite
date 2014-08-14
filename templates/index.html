@@ -22,6 +22,12 @@
 <div class="container">
     <div class="row">
         <div class="poster-wrapper col-md-7">
+            <div class="status">
+                {% if session.screen_name %}
+                    <div class="user">@{{ session.screen_name }}</div>
+                {% endif %}
+                <div class="text"></div>
+            </div>
             <div class="poster">
                 <span class="left-quote">&ldquo;</span>
                 <blockquote><p></p></blockquote>
