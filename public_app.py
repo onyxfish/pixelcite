@@ -74,9 +74,11 @@ def _authorized():
     """
     Callback for Twitter authentication.
     """
-    if request.args.get('oauth_token', '') != session['oauth_token']:
-        abort(401)
-            
+    # Login failed
+    if request.args.get('denied', None) or request.args.get('oauth_token', '') != session['oauth_token']:
+        session.clear()
+        redirect(url_for('index'))
+
     twitter = Twython(
         secrets['TWITTER_CONSUMER_KEY'],
         secrets['TWITTER_CONSUMER_SECRET'],
