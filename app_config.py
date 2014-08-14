@@ -87,8 +87,7 @@ ADS
 SERVICES
 """
 GOOGLE_ANALYTICS = {
-    'ACCOUNT_ID': 'UA-53769241-1',
-    'DOMAIN': 'pixelcite.com'
+    'ACCOUNT_ID': 'UA-53769241-1'
 }
 
 """
