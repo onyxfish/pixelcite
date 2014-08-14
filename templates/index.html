@@ -6,9 +6,9 @@
 <div id="header" class="container">
     <div class="row">
         <div class="col-md-12">
-            <img src="assets/logo36.png" />
+            <img src="{{ S3_BASE_URL }}/assets/logo36.png" />
 
-            <h1>Pixelcite <small>Beautiful quotes for Twitter</small></h1>
+            <h1>Pixelcite <small>Quotations for Twitter</small></h1>
 
             <div class="pull-right">
                 {% if session.oauth_token %}
@@ -63,7 +63,7 @@
                 <p class="attribution"></p>
 
                 <p class="logo-wrapper">
-                    <img class="logo" src="assets/logo36.png" />
+                    <img class="logo" src="{{ S3_BASE_URL }}/assets/logo36.png" />
                 </p>
             </div>
             <div class="buttons">
