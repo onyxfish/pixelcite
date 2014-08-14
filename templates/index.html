@@ -14,7 +14,7 @@
                 {% if session.oauth_token %}
                 Logged in as {{ session.screen_name }} (<a href="/logout/">Logout</a>) 
                 {% else %}
-                <a class="btn btn-primary" href="/authenticate/"><i class="fa fa-twitter"></i> Login with Twitter</a>
+                <button id="login" class="btn btn-primary"><i class="fa fa-twitter"></i> Login with Twitter</button>
                 {% endif %}
             </div>
         </div>

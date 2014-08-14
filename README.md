@@ -357,13 +357,7 @@ The Google Analytics events tracked in this application are:
 
 |Category|Action|Label|Value|Custom 1|Custom 2|
 |--------|------|-----|-----|--------|--------|
-|pixelcite|tweet|`location`||||
-|pixelcite|facebook|`location`||||
-|pixelcite|email|`location`||||
-|pixelcite|new-comment||||
-|pixelcite|open-share-discuss||||
-|pixelcite|close-share-discuss||||
-|pixelcite|summary-copied||||
-|pixelcite|featured-tweet-action|`action`||``tweet_url``|
-|pixelcite|featured-facebook-action|`action`||``post_url``|
+|pixelcite|tweet|||||
+|pixelcite|save-image|||||
+|pixelcite|login|||||
 

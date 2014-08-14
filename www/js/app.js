@@ -17,6 +17,7 @@ var $source = null;
 var $fontSize = null;
 var $url = null;
 
+var $login = null;
 var $tweet = null;
 var $save = null;
 
@@ -48,6 +49,7 @@ var onDocumentReady = function() {
     $fontSize = $('#fontsize');
     $url = $('#url');
 
+    $login = $('#login');
     $save = $('#save');
     $tweet = $('#tweet');
 
@@ -58,6 +60,7 @@ var onDocumentReady = function() {
     $fontSize.on('change', onFontSizeChange);
     $url.on('keyup', onUrlKeyUp);
 
+    $login.on('click', onLoginClick);
     $tweet.on('click', onTweetClick);
     $save.on('click', onSaveClick);
 
@@ -151,9 +154,25 @@ var getImage = function(callback) {
 }
 
 /*
- *Downloads the image.
+ * Tweet the image.
+ */
+var tweet = function(dataUrl) {
+    var status = $display_status.text(status);
+
+    ga('send', 'event', 'pixelcite', 'tweet');
+
+    post('/post/', {
+        'status': status,
+        'image': dataUrl.split(',')[1]
+    });
+}
+
+/*
+ * Downloads the image.
  */
 var saveImage = function(dataUrl) {
+    ga('send', 'event', 'pixelcite', 'save-image');
+
     var quote = $('blockquote').text().split(' ', 5);
     var filename = slugify(quote.join(' '));
 
@@ -165,18 +184,6 @@ var saveImage = function(dataUrl) {
 
     $('#download').attr('href', dataUrl).attr('target', '_blank');
     $('#download').trigger('click');
-}
-
-/*
- * Tweet the image.
- */
-var tweet = function(dataUrl) {
-    var status = $display_status.text(status);
-
-    post('/post/', {
-        'status': status,
-        'image': dataUrl.split(',')[1]
-    });
 }
 
 var adjustFontSize = function(size) {
@@ -248,6 +255,12 @@ var onUrlKeyUp = function () {
 
 var onFontSizeChange = function() {
     adjustFontSize($(this).val());
+}
+
+var onLoginClick = function() {
+    ga('send', 'event', 'pixelcite', 'login');
+
+    window.location.href = '/authenticate/';
 }
 
 var onTweetClick = function() {
