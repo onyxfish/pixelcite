@@ -54,8 +54,9 @@ def _authenticate():
     """
     Initiate Twitter authentication.
     """
-    session.clear()
-    session['oauth_secret'] = ''
+    session.pop('oauth_token', '')
+    session.pop('oauth_token_secret', '')
+    session.pop('screen_name', '')
 
     twitter = Twython(
         secrets['TWITTER_CONSUMER_KEY'],
@@ -76,7 +77,10 @@ def _authorized():
     """
     # Login failed
     if request.args.get('denied', None) or request.args.get('oauth_token', '') != session['oauth_token']:
-        session.clear()
+        session.pop('oauth_token', '')
+        session.pop('oauth_token_secret', '')
+        session.pop('screen_name', '')
+        
         redirect(url_for('index'))
 
     twitter = Twython(
@@ -99,7 +103,9 @@ def _logout():
     """
     Clear current Twitter credentials.
     """
-    session.clear()
+    session.pop('oauth_token', '')
+    session.pop('oauth_token_secret', '')
+    session.pop('screen_name', '')
 
     return redirect(url_for('index'))
 

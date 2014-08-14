@@ -70,7 +70,7 @@
             </div>
             <div class="buttons">
                 <div class="pull-right">
-                    {% if session.oauth_token %}
+                    {% if session.screen_name %}
                     <button id="tweet" class="btn btn-primary"><i class="fa fa-twitter"></i> Tweet</button>
                     {% else %}
                     <a class="btn btn-primary" href="/authenticate/"><i class="fa fa-twitter"></i> Login to Tweet</a>
