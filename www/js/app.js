@@ -167,7 +167,7 @@ var tweet = function(dataUrl) {
         return;
     }
 
-    var status = $display_status.val(status);
+    var status = $display_status.val();
 
     ga('send', 'event', 'pixelcite', 'tweet');
 
@@ -275,7 +275,7 @@ var updateStatus = function() {
         status += ' ' + processUrl(url);
     }
 
-    $display_status.text(status);
+    $display_status.val(status);
 
     updateCount();
 }
