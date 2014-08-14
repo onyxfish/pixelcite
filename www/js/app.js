@@ -140,11 +140,6 @@ var slugify = function(text){
  * Gets data for the image calls a callback when its ready
  */
 var getImage = function(callback) {
-    if (($source.offset().top + $source.height()) > $logo_wrapper.offset().top){
-        alert('Your quote doesn\'t quite fit. Shorten the text or choose a smaller font-size.');
-        return;
-    }
-
     html2canvas($poster, {
         onrendered: function(canvas) {
             var dataUrl = canvas.toDataURL();
@@ -152,7 +147,6 @@ var getImage = function(callback) {
             callback(dataUrl);
         }
     });
-
 }
 
 /*
