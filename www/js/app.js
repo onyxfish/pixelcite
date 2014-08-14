@@ -158,6 +158,14 @@ var getImage = function(callback) {
  * Tweet the image.
  */
 var tweet = function(dataUrl) {
+    var remaining = getRemainingChars();
+
+    if (remaining < 0) {
+        alert('Sorry, your status update is too long to post to Twitter.');
+
+        return;
+    }
+
     var status = $display_status.val(status);
 
     ga('send', 'event', 'pixelcite', 'tweet');
@@ -230,6 +238,23 @@ var processUrl = function(url) {
     return url;
 }
 
+/*
+ * Get count of characters remaining in status.
+ */
+var getRemainingChars = function() {
+    var count = $comment.val().length;
+    
+    var url = $url.val();
+
+    if (url) {
+        count += URL_CHARS; 
+    }
+
+    var max = STATUS_CHARS - RESERVED_CHARS;
+    
+    return max - count;
+}
+
 var updateAttribution = function() {
     var source = $source.val();
     var attr = '';
@@ -255,16 +280,7 @@ var updateStatus = function() {
 }
 
 var updateCount = function() {
-    var count = $comment.val().length;
-    
-    var url = $url.val();
-
-    if (url) {
-        count += URL_CHARS; 
-    }
-
-    var max = STATUS_CHARS - RESERVED_CHARS;
-    var remaining = max - count;
+    var remaining = getRemainingChars();
 
     $count.text(remaining);
 
