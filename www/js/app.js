@@ -1,5 +1,6 @@
 var STATUS_CHARS = 140;
 var RESERVED_CHARS = 23;
+var URL_CHARS = 23;
 
 var $status_wrapper = null;
 var $display_quote = null;
@@ -7,21 +8,24 @@ var $display_attribution = null;
 var $display_status = null;
 var $count = null;
 
-var $save = null;
-var $tweet = null;
 var $poster = null;
-var $font_size = null;
 var $logo_wrapper = null;
 
+var $comment = null;
 var $quote = null;
 var $source = null;
-var $comment = null;
+var $fontSize = null;
+var $url = null;
+
+var $tweet = null;
+var $save = null;
 
 var quotes = [
     {
         'comment': 'One of my favorite LOTR quotes.',
         'quote': 'Not all those who wander are lost.',
-        'source': 'J.R.R. Tolkien, <strong>The Lord of the Rings</strong>'
+        'source': 'J.R.R. Tolkien, <strong>The Lord of the Rings</strong>',
+        'url': 'http://www.amazon.com/Lord-Rings-50th-Anniversary-Vol/dp/0618640150/ref=sr_1_3?s=books&ie=UTF8&qid=1408030941&sr=1-3&keywords=lord+of+the+rings'
     }
 ];
 
@@ -35,24 +39,27 @@ var onDocumentReady = function() {
     $display_status = $('.status .text');
     $count = $('.count');
 
-    $save = $('#save');
-    $tweet = $('#tweet');
     $poster = $('.poster');
-    $font_size = $('#fontsize');
     $logo_wrapper = $('.logo-wrapper');
 
+    $comment = $('#comment');
     $quote = $('#quote'); 
     $source = $('#source');
-    $comment = $('#comment');
+    $fontSize = $('#fontsize');
+    $url = $('#url');
+
+    $save = $('#save');
+    $tweet = $('#tweet');
 
     // Event binding
     $quote.on('keyup', onQuoteKeyUp);
     $source.on('keyup', onSourceKeyUp);
     $comment.on('keyup', onCommentKeyUp);
+    $fontSize.on('change', onFontSizeChange);
+    $url.on('keyup', onUrlKeyUp);
 
     $tweet.on('click', onTweetClick);
     $save.on('click', onSaveClick);
-    $font_size.on('change', onFontSizeChange);
 
     // Setup initial quote
     var quote = quotes[Math.floor(Math.random() * quotes.length)];
@@ -64,6 +71,7 @@ var onDocumentReady = function() {
     $quote.val(quote.quote);
     $source.val(quote.source);
     $comment.val(quote.comment);
+    $url.val(quote.url);
 
     $quote.trigger('keyup');
     $source.trigger('keyup');
@@ -163,7 +171,7 @@ var saveImage = function(dataUrl) {
  * Tweet the image.
  */
 var tweet = function(dataUrl) {
-    var status = $comment.val();
+    var status = $display_status.text(status);
 
     post('/post/', {
         'status': status,
@@ -171,13 +179,13 @@ var tweet = function(dataUrl) {
     });
 }
 
-var adjustFontSize = function(size){
-    var font_size = size.toString() + 'px';
+var adjustFontSize = function(size) {
+    var fontSize = size.toString() + 'px';
 
-    $poster.css('font-size', font_size);
+    $poster.css('font-size', fontSize);
     
-    if ($font_size.val() !== size){
-        $font_size.val(size);
+    if ($fontSize.val() !== size){
+        $fontSize.val(size);
     };
 }
 
@@ -194,6 +202,11 @@ var updateAttribution = function() {
 
 var updateStatus = function() {
     var status = $comment.val();
+    var url = $url.val();
+
+    if (url) {
+        status += ' ' + url;
+    }
 
     $display_status.text(status);
 
@@ -201,7 +214,14 @@ var updateStatus = function() {
 }
 
 var updateCount = function() {
-    var count = $display_status.text().length;
+    var count = $comment.val().length;
+    
+    var url = $url.val();
+
+    if (url) {
+        count += URL_CHARS; 
+    }
+
     var max = STATUS_CHARS - RESERVED_CHARS;
     var remaining = max - count;
 
@@ -210,20 +230,24 @@ var updateCount = function() {
     $count.toggleClass('negative', remaining < 0);
 }
 
-var onQuoteKeyUp = function() {
-    $display_quote.text(smarten($(this).val()));
+var onCommentKeyUp = function() {
+    updateStatus();
 }
 
-var onAuthorKeyUp = function() {
-    updateAttribution();
+var onQuoteKeyUp = function() {
+    $display_quote.text(smarten($(this).val()));
 }
 
 var onSourceKeyUp = function() {
     updateAttribution();
 }
 
-var onCommentKeyUp = function() {
+var onUrlKeyUp = function () {
     updateStatus();
+}
+
+var onFontSizeChange = function() {
+    adjustFontSize($(this).val());
 }
 
 var onTweetClick = function() {
@@ -232,10 +256,6 @@ var onTweetClick = function() {
 
 var onSaveClick =  function() {
     getImage(saveImage);
-}
-
-var onFontSizeChange = function() {
-    adjustFontSize($(this).val());
 }
 
 $(onDocumentReady);

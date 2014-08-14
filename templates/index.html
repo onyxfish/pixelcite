@@ -43,8 +43,9 @@
                     <input id="fontsize" name="fontsize" class="form-control"  type="range" min="24" max="120" value="32" />
                 </div>
                 <div class="form-group">
-                    <label for="url">URL</label>
+                    <label for="url">Source URL (Amazon, etc.)</label>
                     <input id="url" name="url" type="url" class="form-control"  />
+                    <p class="help-block">Note: Pixelcite adds affiliate codes to some URLs.</p>
                 </div>
             </div>
             </form>
@@ -53,7 +54,7 @@
         <div class="poster-wrapper col-md-7">
             <div class="status pull-right">
                 <label class="user" for="text">{% if session.screen_name %}@{{ session.screen_name }}{% else %}@user{% endif %}</label>
-                <textarea class="text form-control" name="text" disabled="disabled"></textarea>
+                <textarea class="text form-control" name="text" rows="4" disabled="disabled"></textarea>
                 <div class="count"></div>
             </div>
             <div class="poster pull-right">
