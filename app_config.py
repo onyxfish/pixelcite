@@ -90,6 +90,8 @@ GOOGLE_ANALYTICS = {
     'ACCOUNT_ID': 'UA-53769241-1'
 }
 
+AMAZON_AFFILIATE_TAG = 'pixelcite-20'
+
 """
 Utilities
 """

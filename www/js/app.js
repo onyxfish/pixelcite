@@ -1,6 +1,7 @@
 var STATUS_CHARS = 140;
 var RESERVED_CHARS = 23;
 var URL_CHARS = 23;
+var AMAZON_DOMAINS = ['amazon.com', 'www.amazon.com', 'amzn.to'];
 
 var $status_wrapper = null;
 var $display_quote = null;
@@ -196,6 +197,39 @@ var adjustFontSize = function(size) {
     };
 }
 
+/*
+ * Process urls and apply affiliate codes.
+ */
+var processUrl = function(url) {
+    if (url.indexOf('http') != 0) {
+        url = 'http://' + url;
+    }
+
+    var parser = document.createElement('a');
+    parser.href = url;
+
+    if (AMAZON_DOMAINS.indexOf(parser.hostname) >= 0) {
+        var pixelciteTag = 'tag=' + APP_CONFIG.AMAZON_AFFILIATE_TAG;
+
+        var tag = /(tag\=.*?)[&\W]/;
+        var match = url.match(tag);
+
+        if (match) {
+            var existingTag = match[1];
+
+            return url.replace(existingTag, pixelciteTag); 
+        }
+
+        if (parser.search) {
+            return url + '&' + pixelciteTag;
+        }
+
+        return url + '?' + pixelciteTag;
+    }
+
+    return url;
+}
+
 var updateAttribution = function() {
     var source = $source.val();
     var attr = '';
@@ -212,7 +246,7 @@ var updateStatus = function() {
     var url = $url.val();
 
     if (url) {
-        status += ' ' + url;
+        status += ' ' + processUrl(url);
     }
 
     $display_status.text(status);
