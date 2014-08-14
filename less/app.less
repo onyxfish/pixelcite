@@ -17,7 +17,7 @@ body {
 #header {
 	background: @gray-lighter;
     margin-top: @grid-gutter-width;
-    margin-bottom: @grid-gutter-width * 0.5;
+    margin-bottom: @grid-gutter-width;
 	color: #333;
 
     img {
@@ -31,10 +31,6 @@ body {
         margin: 0;
         -webkit-font-smoothing: antialiased;
     }
-
-    .login-wrapper {
-        float: right;
-    }
 }
 
 .poster-wrapper,
@@ -43,10 +39,19 @@ body {
 }
 
 .status {
-    margin: @line-height-computed;
+    width: 640px;
+    margin-bottom: @line-height-computed;
 
     .user {
-        color: @gray;
+        color: #888;
+    }
+
+    .count {
+        float: right;
+
+        &.negative {
+            color: red;
+        }
     }
 }
 
@@ -54,13 +59,13 @@ body {
 	height: 360px;
 	width: 640px;
 	background: #fff;
-	margin: @line-height-computed;
 	position: relative;
 	font-size: 32px;
 	line-height: 1 !important;
 	overflow: hidden;
     padding-left: @grid-gutter-width;
     padding-top: @grid-gutter-width;
+    margin-bottom: @grid-gutter-width;
 
     .left-quote {
         content:"\201C";

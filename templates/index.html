@@ -8,7 +8,7 @@
 
             <h1>Pixelcite <small>Beautiful quotes for Twitter</small></h1>
 
-            <div class="login-wrapper">
+            <div class="pull-right">
                 {% if session.oauth_token %}
                 Logged in as {{ session.screen_name }} (<a href="/logout/">Logout</a>) 
                 {% else %}
@@ -21,43 +21,20 @@
 
 <div class="container">
     <div class="row">
-        <div class="poster-wrapper col-md-7">
-            <div class="status">
-                {% if session.screen_name %}
-                    <div class="user">@{{ session.screen_name }}</div>
-                {% endif %}
-                <div class="text"></div>
-            </div>
-            <div class="poster">
-                <span class="left-quote">&ldquo;</span>
-                <blockquote><p></p></blockquote>
-
-                <p class="attribution"></p>
-
-                <p class="logo-wrapper">
-                    <img class="logo" src="assets/logo36.png" />
-                </p>
-            </div>
-        </div>
-
         <div class="form-wrapper col-md-5">
             <div class="controls-wrapper">
             <form role="form">
+                <div class="form-group">
+                    <label for="comment">Status</label>
+                    <textarea id="comment" name="comment" class="form-control"></textarea>
+                </div>
                 <div class="form-group">
                     <label for="quotetext">Quote</label>
                     <textarea id="quote" name="quote" class="form-control"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="author">Author</label>
-                    <input id="author" name="author" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <label for="source">Source</label>
+                    <label for="source">Author / Source</label>
                     <input id="source" name="source" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <label for="comment">Comment</label>
-                    <input id="comment" name="comment" class="form-control" >
                 </div>
                 <div class="form-group">
                     <label for="fontsize">Font Size</label>
@@ -67,17 +44,39 @@
                     <label for="url">URL</label>
                     <input id="url" name="url" type="url" class="form-control"  />
                 </div>
-                <div class="form-group">
-                    {% if session.oauth_token %}
-                    <button id="tweet" class="btn btn-lg btn-primary"><i class="fa fa-twitter"></i> Tweet</button>
-                    {% else %}
-                    <a class="btn btn-lg btn-primary" href="/authenticate/"><i class="fa fa-twitter"></i> Login to Tweet</a>
-                    {% endif %}
-                    <button id="save" class="btn btn-lg btn-default"><i class="fa fa-download"></i> Save image</button>
-                </div>
             </div>
             </form>
         </div>
+
+        <div class="poster-wrapper col-md-7">
+            <div class="status pull-right">
+                <label class="user" for="text">{% if session.screen_name %}@{{ screen_name }}{% else %}@user{% endif %}</label>
+                <textarea class="text form-control" name="text" disabled="disabled"></textarea>
+                <div class="count"></div>
+            </div>
+            <div class="poster pull-right">
+                <span class="left-quote">&ldquo;</span>
+                <blockquote><p></p></blockquote>
+
+                <p class="attribution"></p>
+
+                <p class="logo-wrapper">
+                    <img class="logo" src="assets/logo36.png" />
+                </p>
+            </div>
+            <div class="buttons">
+                <div class="pull-right">
+                    {% if session.oauth_token %}
+                    <button id="tweet" class="btn btn-primary"><i class="fa fa-twitter"></i> Tweet</button>
+                    {% else %}
+                    <a class="btn btn-primary" href="/authenticate/"><i class="fa fa-twitter"></i> Login to Tweet</a>
+                    {% endif %}
+                    <button id="save" class="btn btn-default"><i class="fa fa-download"></i> Save image</button>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 </div>
 

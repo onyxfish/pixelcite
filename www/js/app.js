@@ -1,6 +1,11 @@
+var STATUS_CHARS = 140;
+var RESERVED_CHARS = 23;
+
+var $status_wrapper = null;
 var $display_quote = null;
 var $display_attribution = null;
 var $display_status = null;
+var $count = null;
 
 var $save = null;
 var $tweet = null;
@@ -9,16 +14,14 @@ var $font_size = null;
 var $logo_wrapper = null;
 
 var $quote = null;
-var $author = null;
 var $source = null;
 var $comment = null;
 
 var quotes = [
     {
+        'comment': 'One of my favorite LOTR quotes.',
         'quote': 'Not all those who wander are lost.',
-        'author': 'J.R.R. Tolkien',
-        'source': 'The Lord of the Rings',
-        'comment': 'One of my favorite LOTR quotes.'
+        'source': 'J.R.R. Tolkien, <strong>The Lord of the Rings</strong>'
     }
 ];
 
@@ -26,9 +29,11 @@ var quotes = [
  * On page load.
  */
 var onDocumentReady = function() {
+    $status_wrapper = $('.status');
     $display_quote = $('.poster blockquote p');
     $display_attribution = $('.attribution');
     $display_status = $('.status .text');
+    $count = $('.count');
 
     $save = $('#save');
     $tweet = $('#tweet');
@@ -37,13 +42,11 @@ var onDocumentReady = function() {
     $logo_wrapper = $('.logo-wrapper');
 
     $quote = $('#quote'); 
-    $author = $('#author');
     $source = $('#source');
     $comment = $('#comment');
 
     // Event binding
     $quote.on('keyup', onQuoteKeyUp);
-    $author.on('keyup', onAuthorKeyUp);
     $source.on('keyup', onSourceKeyUp);
     $comment.on('keyup', onCommentKeyUp);
 
@@ -59,12 +62,11 @@ var onDocumentReady = function() {
     }
 
     $quote.val(quote.quote);
-    $author.val(quote.author);
     $source.val(quote.source);
     $comment.val(quote.comment);
 
     $quote.trigger('keyup');
-    $author.trigger('keyup');
+    $source.trigger('keyup');
     $comment.trigger('keyup');
 }
 
@@ -180,20 +182,11 @@ var adjustFontSize = function(size){
 }
 
 var updateAttribution = function() {
-    var author = $author.val();
     var source = $source.val();
     var attr = '';
 
-    if (author || source) {
-        attr += '&mdash;&thinsp;';
-    }
-
-    if (author && source) {
-        attr += author + ', &ldquo;' + source + '&rdquo;';
-    } else if (author) {
-        attr += author;
-    } else if (source) {
-        attr += '&ldquo;' + source + '&rdquo;';
+    if (source) {
+        attr += '&mdash;&thinsp;' + source;
     }
 
     $display_attribution.html(attr);
@@ -203,6 +196,18 @@ var updateStatus = function() {
     var status = $comment.val();
 
     $display_status.text(status);
+
+    updateCount();
+}
+
+var updateCount = function() {
+    var count = $display_status.text().length;
+    var max = STATUS_CHARS - RESERVED_CHARS;
+    var remaining = max - count;
+
+    $count.text(remaining);
+
+    $count.toggleClass('negative', remaining < 0);
 }
 
 var onQuoteKeyUp = function() {
