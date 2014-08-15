@@ -280,7 +280,7 @@ var updateStatus = function() {
     var count = status.length;
 
     var entities = twttr.txt.extractEntitiesWithIndices(status, {
-        extractUrlsWithoutProtocol: true
+        'extractUrlsWithoutProtocol': true
     });
 
     _.each(entities, function(entity) {
@@ -294,7 +294,9 @@ var updateStatus = function() {
         entity.url = processUrl(entity.url);
     });
 
-    var status = twttr.txt.autoLinkEntities(status, entities);
+    var status = twttr.txt.autoLinkEntities(status, entities, {
+        'targetBlank': true
+    });
 
     $display_status.html(status);
 
