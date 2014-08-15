@@ -24,11 +24,11 @@ var $save = null;
 
 var exampleQuotes = [
     {
-        'comment': 'One of my favorite LOTR quotes.',
-        'quote': 'Not all those who wander are lost.',
-        'source': 'J.R.R. Tolkien, <strong>The Lord of the Rings</strong>',
-        'url': 'http://www.amazon.com/Lord-Rings-50th-Anniversary-Vol/dp/0618640150/ref=sr_1_3?s=books&ie=UTF8&qid=1408030941&sr=1-3&keywords=lord+of+the+rings',
-        'fontSize': 48
+        'comment': 'Words of wisdom.',
+        'quote': 'A social movement that only moves people is merely a revolt. A movement that changes both people and institutions is a revolution.',
+        'source': 'Martin Luther King, Jr., <em>Why We Can\'t Wait</em>',
+        'url': 'http://www.amazon.com/Why-Cant-Wait-Signet-Classics/dp/0451527534',
+        'fontSize': 31
     }
 ];
 
