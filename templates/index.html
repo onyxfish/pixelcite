@@ -27,24 +27,27 @@
             <div class="controls-wrapper">
             <form role="form">
                 <div class="form-group">
-                    <label for="status">Status</label>
+                    <label for="status">Status *</label>
                     <textarea id="status" name="status" class="form-control"></textarea>
                     <div class="count"></div>
-                    <p class="help-block">* Pixelcite adds affiliate codes to some URLs.</p>
                 </div>
                 <div class="form-group">
-                    <label for="quotetext">Quote</label>
+                    <label for="quotetext">Quote &dagger;</label>
                     <textarea id="quote" name="quote" class="form-control" rows="4"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="source">Author / Source</label>
+                    <label for="source">Author / Source &dagger;</label>
                     <input id="source" name="source" class="form-control" />
                 </div>
                 <div class="form-group">
                     <label for="fontsize">Font Size (slide to adjust)</label>
                     <input id="fontsize" name="fontsize" class="form-control"  type="range" min="18" max="120" value="32" />
                 </div>
-            </div>
+                    <p class="help-block">
+                        * Pixelcite adds affiliate codes to some URLs.<br />
+                        &dagger; HTML is allowed. Use &lt;br /&gt; for line breaks.
+                    </p>
+           </div>
             </form>
         </div>
 

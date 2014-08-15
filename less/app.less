@@ -103,6 +103,10 @@ body {
     }
 
     @media screen and (max-width: @screen-xs-max){
+        .form-group {
+            clear: both;
+        }
+
         .form-control, .help-block {
             width: @small-control-width;
         }
@@ -126,6 +130,13 @@ body {
     
     @media screen and (max-width: @screen-xs-max) {
         float: left;
+        width: @small-control-width;
+    }
+}
+
+.poster-wrapper {
+    @media screen and (max-width: @screen-xs-max) {
+        margin-top: 30px;
     }
 }
 
