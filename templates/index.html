@@ -10,7 +10,7 @@
 
             <h1>Pixelcite <small>Quotations for Twitter</small></h1>
 
-            <div class="pull-right">
+            <div class="twitter">
                 {% if session.screen_name %}
                 Logged in as {{ session.screen_name }} (<a href="/logout/">Logout</a>) 
                 {% else %}
@@ -21,7 +21,7 @@
     </div>
 </div>
 
-<div class="container">
+<div class="controls container">
     <div class="row">
         <div class="form-wrapper col-md-5">
             <div class="controls-wrapper">
@@ -52,12 +52,12 @@
         </div>
 
         <div class="poster-wrapper col-md-7">
-            <div class="status pull-right">
+            <div class="status">
                 <label class="user" for="text">{% if session.screen_name %}@{{ session.screen_name }}{% else %}@user{% endif %}</label>
                 <textarea class="text form-control" name="text" rows="4" disabled="disabled"></textarea>
                 <div class="count"></div>
             </div>
-            <div class="poster pull-right">
+            <div class="poster">
                 <span class="left-quote">&ldquo;</span>
                 <blockquote><p></p></blockquote>
 
@@ -69,14 +69,12 @@
                 </div>
             </div>
             <div class="buttons">
-                <div class="pull-right">
-                    {% if session.screen_name %}
-                    <button id="tweet" class="btn btn-primary"><i class="fa fa-twitter"></i> Tweet</button>
-                    {% else %}
-                    <a class="btn btn-primary" href="/authenticate/"><i class="fa fa-twitter"></i> Login to Tweet</a>
-                    {% endif %}
-                    <button id="save" class="btn btn-default"><i class="fa fa-download"></i> Save image</button>
-                </div>
+                {% if session.screen_name %}
+                <button id="tweet" class="btn btn-primary"><i class="fa fa-twitter"></i> Tweet</button>
+                {% else %}
+                <a class="btn btn-primary" href="/authenticate/"><i class="fa fa-twitter"></i> Login to Tweet</a>
+                {% endif %}
+                <button id="save" class="btn btn-default"><i class="fa fa-download"></i> Save image</button>
             </div>
         </div>
     </div>
@@ -87,7 +85,16 @@
 
 <div id="footer">
     <div class="container">
-        Made by <a href="https://twitter.com/onyxfish">@onxyfish</a>, &copy; 2014.&nbsp;&nbsp;&middot;&nbsp;&nbsp;Inspired by <a href="https://twitter.com/nprviz">@nprviz</a>'s <a href="https://github.com/nprapps/quotable">quotable</a>.&nbsp;&nbsp;&middot;&nbsp;&nbsp;This site stores no user data.&nbsp;&nbsp;&middot;&nbsp;&nbsp;Send feedback or inquiries to <a href="mailto:pixelcite@gmail.com">pixelcite@gmail.com</a>.
+        <div class="row">
+            <div class="col-md-12">
+                <ul>
+                    <li>Made by <a href="https://twitter.com/onyxfish">@onxyfish</a>, &copy; 2014.</li>
+                    <li>Inspired by <a href="https://twitter.com/nprviz">@nprviz</a>'s <a href="https://github.com/nprapps/quotable">quotable</a>.</li>
+                    <li>This site stores no user data.</li>
+                    <li>Send feedback or inquiries to <a href="mailto:pixelcite@gmail.com">pixelcite@gmail.com</a>.</li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
