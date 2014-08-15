@@ -3,6 +3,7 @@ var RESERVED_CHARS = 23;
 var MAX_LENGTH = STATUS_CHARS - RESERVED_CHARS;
 var URL_CHARS = 23;
 var AMAZON_DOMAINS = ['amazon.com', 'www.amazon.com', 'amzn.to'];
+var UI_THROTTLE = 200;
 
 var $status_wrapper = null;
 var $display_status = null;
@@ -54,9 +55,9 @@ var onDocumentReady = function() {
     $tweet = $('#tweet');
 
     // Event binding
-    $quote.on('keyup', onQuoteKeyUp);
-    $source.on('keyup', onSourceKeyUp);
-    $status.on('keyup', onStatusKeyUp);
+    $status.on('keyup change', onStatusKeyUp);
+    $quote.on('keyup change', onQuoteKeyUp);
+    $source.on('keyup change', onSourceKeyUp);
     $fontSize.on('change', onFontSizeChange);
 
     $login.on('click', onLoginClick);
@@ -114,10 +115,7 @@ var setQuote = function(quote) {
     $source.val(quote['source']);
     $fontSize.val(quote['fontSize']);
 
-    $status.trigger('keyup');
-    $quote.trigger('keyup');
-    $source.trigger('keyup');
-    $fontSize.trigger('change');
+    updateAll();
 }
 
 /*
@@ -191,7 +189,7 @@ var getImage = function(callback) {
  */
 var tweet = function(dataUrl) {
     // Ensure we aren't mid-debounce
-    updateStatus();
+    updateAll();
 
     if ($count.hasClass('negative')) {
         alert('Sorry, your status update is too long to post to Twitter.');
@@ -216,7 +214,7 @@ var saveImage = function(dataUrl) {
     ga('send', 'event', 'pixelcite', 'save-image');
 
     // Ensure we aren't mid-debounce
-    updateStatus();
+    updateAll();
 
     var quote = $('blockquote').text().split(' ', 5);
     var filename = slugify(quote.join(' '));
@@ -264,17 +262,6 @@ var processUrl = function(url) {
     return url;
 }
 
-var updateAttribution = function() {
-    var source = $source.val();
-    var attr = '';
-
-    if (source) {
-        attr += '&mdash;&thinsp;' + source;
-    }
-
-    $display_attribution.html(attr);
-}
-
 var updateStatus = function() {
     var status = $status.val();
     var count = status.length;
@@ -306,28 +293,51 @@ var updateStatus = function() {
     $count.toggleClass('negative', remaining < 0);
 }
 
-var updateStatusDebounced = _.debounce(updateStatus, 200); 
-
-var onStatusKeyUp = function() {
-    updateStatusDebounced();
-    saveQuote();
+var updateQuote = function() {
+    $display_quote.html(smarten($quote.val()));
 }
 
-var onQuoteKeyUp = function() {
-    $display_quote.html(smarten($(this).val()));
-    saveQuote();
+var updateAttribution = function() {
+    var source = $source.val();
+    var attr = '';
+
+    if (source) {
+        attr += '&mdash;&thinsp;' + source;
+    }
+
+    $display_attribution.html(attr);
 }
 
-var onSourceKeyUp = function() {
-    updateAttribution();
-    saveQuote();
-}
-
-var onFontSizeChange = function() {
+var updateFontSize = function() {
     var fontSize = $fontSize.val().toString() + 'px';
 
     $poster.css('font-size', fontSize);
-    
+}
+
+var updateAll = function() {
+    updateStatus();
+    updateQuote();
+    updateAttribution();
+    updateFontSize();
+}
+
+var onStatusKeyUp = _.throttle(function() {
+    updateStatus();
+    saveQuote();
+}, UI_THROTTLE);
+
+var onQuoteKeyUp = _.throttle(function() {
+    updateQuote();
+    saveQuote();
+}, UI_THROTTLE);
+
+var onSourceKeyUp = _.throttle(function() {
+    updateAttribution();
+    saveQuote();
+}, UI_THROTTLE);
+
+var onFontSizeChange = function() {
+    updateFontSize();
     saveQuote();
 }
 
