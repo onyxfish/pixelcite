@@ -314,7 +314,7 @@ var onStatusKeyUp = function() {
 }
 
 var onQuoteKeyUp = function() {
-    $display_quote.text(smarten($(this).val()));
+    $display_quote.html(smarten($(this).val()));
     saveQuote();
 }
 
