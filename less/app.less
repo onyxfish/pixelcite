@@ -35,6 +35,7 @@ body {
 
     li {
         display: inline; 
+        white-space: nowrap;
 
         &:after {
             content: "\00a0\00a0\00b7\00a0\00a0";  
@@ -128,14 +129,14 @@ body {
         color: #888;
     }
     
-    @media screen and (max-width: @screen-xs-max) {
+    @media screen and (max-width: @screen-md-max) {
         float: left;
         width: @small-control-width;
     }
 }
 
 .poster-wrapper {
-    @media screen and (max-width: @screen-xs-max) {
+    @media screen and (max-width: @screen-md-max) {
         margin-top: 30px;
     }
 }
@@ -152,6 +153,7 @@ body {
     padding-top: @grid-gutter-width;
     margin-bottom: @grid-gutter-width;
     float: right;
+    clear: both;
 
     .left-quote {
         content:"\201C";
@@ -228,19 +230,23 @@ body {
         }
 	}
 
-    @media screen and (max-width: @screen-xs-max){
+    @media screen and (max-width: @screen-md-max){
         float: left;
     }
 }
 
 .buttons {
+    clear: both;
     float: right;
 
-    @media screen and (max-width: @screen-xs-max){
+    @media screen and (max-width: @screen-md-max){
         float: left;
-
+    }
+    
+    @media screen and (max-width: @screen-xs-max){
         #save {
             display: none;
         }
     }
+
 }
