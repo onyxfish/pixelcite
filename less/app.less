@@ -94,22 +94,6 @@ body {
 }
 
 .controls {
-    @media screen and (max-width: @screen-xs-max){
-        .form-control {
-            width: @small-control-width;
-        }
-    }
-}
-
-.status {
-    width: 640px;
-    margin-bottom: @line-height-computed;
-    float: right;
-
-    .user {
-        color: #888;
-    }
-
     .count {
         float: right;
 
@@ -117,15 +101,31 @@ body {
             color: red;
         }
     }
-    
-    @media screen and (max-width: @screen-xs-max) {
-        float: left;
+
+    @media screen and (max-width: @screen-xs-max){
+        .form-control, .help-block {
+            width: @small-control-width;
+        }
 
         .count {
             float: left;
             text-align: right;
             width: @small-control-width;;
         }
+    }
+}
+
+#display-wrapper {
+    width: 640px;
+    margin-bottom: @line-height-computed;
+    float: right;
+
+    label {
+        color: #888;
+    }
+    
+    @media screen and (max-width: @screen-xs-max) {
+        float: left;
     }
 }
 

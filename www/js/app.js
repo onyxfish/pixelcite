@@ -1,22 +1,22 @@
 var STATUS_CHARS = 140;
 var RESERVED_CHARS = 23;
+var MAX_LENGTH = STATUS_CHARS - RESERVED_CHARS;
 var URL_CHARS = 23;
 var AMAZON_DOMAINS = ['amazon.com', 'www.amazon.com', 'amzn.to'];
 
 var $status_wrapper = null;
+var $display_status = null;
 var $display_quote = null;
 var $display_attribution = null;
-var $display_status = null;
-var $count = null;
 
 var $poster = null;
 var $logo_wrapper = null;
 
-var $comment = null;
+var $status = null;
+var $count = null;
 var $quote = null;
 var $source = null;
 var $fontSize = null;
-var $url = null;
 
 var $login = null;
 var $tweet = null;
@@ -24,10 +24,9 @@ var $save = null;
 
 var exampleQuotes = [
     {
-        'comment': 'Words of wisdom.',
+        'status': 'Words of wisdom.',
         'quote': 'A social movement that only moves people is merely a revolt. A movement that changes both people and institutions is a revolution.',
         'source': 'Martin Luther King, Jr., <em>Why We Can\'t Wait</em>',
-        'url': 'http://www.amazon.com/Why-Cant-Wait-Signet-Classics/dp/0451527534',
         'fontSize': 31
     }
 ];
@@ -39,17 +38,16 @@ var onDocumentReady = function() {
     $status_wrapper = $('.status');
     $display_quote = $('.poster blockquote p');
     $display_attribution = $('.attribution');
-    $display_status = $('.status .text');
+    $display_status = $('#display-status');
     $count = $('.count');
 
     $poster = $('.poster');
     $logo_wrapper = $('.logo-wrapper');
 
-    $comment = $('#comment');
+    $status = $('#status');
     $quote = $('#quote'); 
     $source = $('#source');
     $fontSize = $('#fontsize');
-    $url = $('#url');
 
     $login = $('#login');
     $save = $('#save');
@@ -58,9 +56,8 @@ var onDocumentReady = function() {
     // Event binding
     $quote.on('keyup', onQuoteKeyUp);
     $source.on('keyup', onSourceKeyUp);
-    $comment.on('keyup', onCommentKeyUp);
+    $status.on('keyup', onStatusKeyUp);
     $fontSize.on('change', onFontSizeChange);
-    $url.on('keyup', onUrlKeyUp);
 
     $login.on('click', onLoginClick);
     $tweet.on('click', onTweetClick);
@@ -86,15 +83,14 @@ var loadExampleQuote = function() {
  * Load quote from cookies.
  */
 var loadQuote = function() {
-    if ($.cookie('comment') === undefined) {
+    if ($.cookie('status') === undefined) {
         return null;
     }
 
     return {
-        'comment': $.cookie('comment'),
+        'status': $.cookie('status'),
         'quote': $.cookie('quote'),
         'source': $.cookie('source'),
-        'url': $.cookie('url'),
         'fontSize': $.cookie('fontSize')
     }
 }
@@ -103,10 +99,9 @@ var loadQuote = function() {
  * Save quote to cookies.
  */
 var saveQuote = function() {
-    $.cookie('comment', $comment.val());
+    $.cookie('status', $status.val());
     $.cookie('quote', $quote.val());
     $.cookie('source', $source.val());
-    $.cookie('url', $url.val());
     $.cookie('fontSize', $fontSize.val());
 }
 
@@ -114,13 +109,12 @@ var saveQuote = function() {
  * Update form with quote data.
  */
 var setQuote = function(quote) {
-    $comment.val(quote['comment']);
+    $status.val(quote['status']);
     $quote.val(quote['quote']);
     $source.val(quote['source']);
-    $url.val(quote['url']);
     $fontSize.val(quote['fontSize']);
 
-    $comment.trigger('keyup');
+    $status.trigger('keyup');
     $quote.trigger('keyup');
     $source.trigger('keyup');
     $fontSize.trigger('change');
@@ -196,15 +190,16 @@ var getImage = function(callback) {
  * Tweet the image.
  */
 var tweet = function(dataUrl) {
-    var remaining = getRemainingChars();
+    // Ensure we aren't mid-debounce
+    updateStatus();
 
-    if (remaining < 0) {
+    if ($count.hasClass('negative')) {
         alert('Sorry, your status update is too long to post to Twitter.');
 
         return;
     }
 
-    var status = $display_status.val();
+    var status = $display_status.text();
 
     ga('send', 'event', 'pixelcite', 'tweet');
 
@@ -219,6 +214,9 @@ var tweet = function(dataUrl) {
  */
 var saveImage = function(dataUrl) {
     ga('send', 'event', 'pixelcite', 'save-image');
+
+    // Ensure we aren't mid-debounce
+    updateStatus();
 
     var quote = $('blockquote').text().split(' ', 5);
     var filename = slugify(quote.join(' '));
@@ -266,23 +264,6 @@ var processUrl = function(url) {
     return url;
 }
 
-/*
- * Get count of characters remaining in status.
- */
-var getRemainingChars = function() {
-    var count = $comment.val().length;
-    
-    var url = $url.val();
-
-    if (url) {
-        count += URL_CHARS; 
-    }
-
-    var max = STATUS_CHARS - RESERVED_CHARS;
-    
-    return max - count;
-}
-
 var updateAttribution = function() {
     var source = $source.val();
     var attr = '';
@@ -295,28 +276,38 @@ var updateAttribution = function() {
 }
 
 var updateStatus = function() {
-    var status = $comment.val();
-    var url = $url.val();
+    var status = $status.val();
+    var count = status.length;
 
-    if (url) {
-        status += ' ' + processUrl(url);
-    }
+    var entities = twttr.txt.extractEntitiesWithIndices(status, {
+        extractUrlsWithoutProtocol: true
+    });
 
-    $display_status.val(status);
+    _.each(entities, function(entity) {
+        if (entity.url === undefined) {
+            return;
+        }
 
-    updateCount();
-}
+        count -= entity.url.length;
+        count += URL_CHARS;
 
-var updateCount = function() {
-    var remaining = getRemainingChars();
+        entity.url = processUrl(entity.url);
+    });
+
+    var status = twttr.txt.autoLinkEntities(status, entities);
+
+    $display_status.html(status);
+
+    var remaining = MAX_LENGTH - count;
 
     $count.text(remaining);
-
     $count.toggleClass('negative', remaining < 0);
 }
 
-var onCommentKeyUp = function() {
-    updateStatus();
+var updateStatusDebounced = _.debounce(updateStatus, 200); 
+
+var onStatusKeyUp = function() {
+    updateStatusDebounced();
     saveQuote();
 }
 
@@ -327,11 +318,6 @@ var onQuoteKeyUp = function() {
 
 var onSourceKeyUp = function() {
     updateAttribution();
-    saveQuote();
-}
-
-var onUrlKeyUp = function () {
-    updateStatus();
     saveQuote();
 }
 

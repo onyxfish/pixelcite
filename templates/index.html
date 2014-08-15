@@ -27,8 +27,10 @@
             <div class="controls-wrapper">
             <form role="form">
                 <div class="form-group">
-                    <label for="comment">Status</label>
-                    <textarea id="comment" name="comment" class="form-control"></textarea>
+                    <label for="status">Status</label>
+                    <textarea id="status" name="status" class="form-control"></textarea>
+                    <div class="count"></div>
+                    <p class="help-block">* Pixelcite adds affiliate codes to some URLs.</p>
                 </div>
                 <div class="form-group">
                     <label for="quotetext">Quote</label>
@@ -42,20 +44,14 @@
                     <label for="fontsize">Font Size (slide to adjust)</label>
                     <input id="fontsize" name="fontsize" class="form-control"  type="range" min="18" max="120" value="32" />
                 </div>
-                <div class="form-group">
-                    <label for="url">Source URL (Amazon, etc.)</label>
-                    <input id="url" name="url" type="url" class="form-control"  />
-                    <p class="help-block">Note: Pixelcite adds affiliate codes to some URLs.</p>
-                </div>
             </div>
             </form>
         </div>
 
         <div class="poster-wrapper col-md-7">
-            <div class="status">
-                <label class="user" for="text">{% if session.screen_name %}@{{ session.screen_name }}{% else %}@user{% endif %}</label>
-                <textarea class="text form-control" name="text" rows="4" disabled="disabled"></textarea>
-                <div class="count"></div>
+            <div id="display-wrapper">
+                <label>{% if session.screen_name %}@{{ session.screen_name }}{% else %}@user{% endif %}</label>
+                <div id="display-status"></div>
             </div>
             <div class="poster">
                 <span class="left-quote">&ldquo;</span>
