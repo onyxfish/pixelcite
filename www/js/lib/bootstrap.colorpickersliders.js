@@ -2064,7 +2064,7 @@
       XYZ.z = (XYZ.z - 0.137931034) / 7.787;
     }
 
-    // Observer = 2°, Illuminant = D65
+    // Observer = 2, Illuminant = D65
     XYZ.x = 95.047 * XYZ.x;
     XYZ.y = 100.000 * XYZ.y;
     XYZ.z = 108.883 * XYZ.z;
@@ -2075,7 +2075,7 @@
   $.fn.ColorPickerSliders.XYZ2rgb = function(XYZ) {
     var rgb = {};
 
-    // Observer = 2°, Illuminant = D65
+    // Observer = 2, Illuminant = D65
     XYZ.x = XYZ.x / 100;        // X from 0 to 95.047
     XYZ.y = XYZ.y / 100;        // Y from 0 to 100.000
     XYZ.z = XYZ.z / 100;        // Z from 0 to 108.883
