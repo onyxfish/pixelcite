@@ -37,14 +37,30 @@
                     <label for="source">Author / Source &dagger;</label>
                     <input id="source" name="source" class="form-control" />
                 </div>
-                <div class="form-group">
-                    <label for="fontsize">Font Size (slide to adjust)</label>
-                    <input id="fontsize" name="fontsize" class="form-control"  type="range" min="18" max="120" value="32" />
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                                <label for="fontsize">Font Size</label>
+                                <input id="fontsize" name="fontsize" class="form-control" value="32" />
+                        </div>
+                        <div class="form-group col-md-4">
+                                <label for="text-color">Text color</label>
+                                <input id="text-color" name="text-color" type="text" class="form-control" />
+                        </div>
+                        <div class="form-group col-md-4">
+                                <label for="bg-color">Background color</label>
+                                <input id="bg-color" name="bg-color" type="text" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <p class="help-block">
+                                * Pixelcite adds affiliate codes to some URLs.<br />
+                                &dagger; HTML is allowed. Use &lt;br /&gt; for line breaks.
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                    <p class="help-block">
-                        * Pixelcite adds affiliate codes to some URLs.<br />
-                        &dagger; HTML is allowed. Use &lt;br /&gt; for line breaks.
-                    </p>
            </div>
             </form>
         </div>
