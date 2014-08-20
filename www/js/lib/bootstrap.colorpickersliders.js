@@ -1964,7 +1964,7 @@
     g = g * 100;
     b = b * 100;
 
-    // Observer = 2, Illuminant = D65
+    // Observer = 2°, Illuminant = D65
     XYZ.x = r * 0.4124 + g * 0.3576 + b * 0.1805;
     XYZ.y = r * 0.2126 + g * 0.7152 + b * 0.0722;
     XYZ.z = r * 0.0193 + g * 0.1192 + b * 0.9505;
@@ -1975,7 +1975,7 @@
   $.fn.ColorPickerSliders.XYZ2CIELab = function(XYZ) {
     var CIELab = {};
 
-    // Observer = 2, Illuminant = D65
+    // Observer = 2°, Illuminant = D65
     var X = XYZ.x / 95.047;
     var Y = XYZ.y / 100.000;
     var Z = XYZ.z / 108.883;
@@ -2064,7 +2064,7 @@
       XYZ.z = (XYZ.z - 0.137931034) / 7.787;
     }
 
-    // Observer = 2, Illuminant = D65
+    // Observer = 2°, Illuminant = D65
     XYZ.x = 95.047 * XYZ.x;
     XYZ.y = 100.000 * XYZ.y;
     XYZ.z = 108.883 * XYZ.z;
@@ -2075,7 +2075,7 @@
   $.fn.ColorPickerSliders.XYZ2rgb = function(XYZ) {
     var rgb = {};
 
-    // Observer = 2, Illuminant = D65
+    // Observer = 2°, Illuminant = D65
     XYZ.x = XYZ.x / 100;        // X from 0 to 95.047
     XYZ.y = XYZ.y / 100;        // Y from 0 to 100.000
     XYZ.z = XYZ.z / 100;        // Z from 0 to 108.883

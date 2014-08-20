@@ -34,9 +34,6 @@
     {% block outer_content %}
     {% endblock outer_content %}
 
-    <script type="text/javascript" src="{{ S3_BASE_URL }}/js/lib/html2canvas.min.js"></script>
-    <script type="text/javascript" src="{{ S3_BASE_URL }}/js/lib/twitter-text.min.js"></script>
-
     {{ JS.push('js/lib/jquery.js') }}
     {{ JS.push('js/lib/underscore.js') }}
     {{ JS.push('js/lib/bootstrap.js') }}
@@ -44,6 +41,8 @@
     {{ JS.push('js/lib/jquery.bootstrap-touchspin.js') }}
     {{ JS.push('js/lib/tinycolor.js') }}
     {{ JS.push('js/lib/bootstrap.colorpickersliders.js') }}
+    {{ JS.push('js/lib/html2canvas.js') }}
+    {{ JS.push('js/lib/twitter-text.js') }}
     {{ JS.push('js/app_config.js') }}
     {{ JS.push('js/console.js') }}
     {{ JS.push('js/app.js') }}

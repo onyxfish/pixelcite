@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import codecs
 import urllib
 
 from cssmin import cssmin
@@ -86,9 +87,9 @@ class JavascriptIncluder(Includer):
         for src in self.includes:
             src_paths.append('www/%s' % src)
 
-            with open('www/%s' % src) as f:
+            with codecs.open('www/%s' % src, encoding='utf-8') as f:
                 print '- compressing %s' % src
-                output.append(minify(f.read().encode('utf-8')))
+                output.append(minify(f.read()))
 
         context = make_context()
         context['paths'] = src_paths
@@ -118,9 +119,9 @@ class CSSIncluder(Includer):
             else:
                 src_paths.append('www/%s' % src)
 
-            with open('www/%s' % src) as f:
+            with codecs.open('www/%s' % src, encoding='utf-8') as f:
                 print '- compressing %s' % src
-                output.append(cssmin(f.read().encode('utf-8')))
+                output.append(cssmin(f.read()))
 
         context = make_context()
         context['paths'] = src_paths

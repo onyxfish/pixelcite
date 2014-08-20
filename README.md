@@ -12,12 +12,8 @@ pixelcite
 * [Bootstrap the project](#bootstrap-the-project)
 * [Hide project secrets](#hide-project-secrets)
 * [Save media assets](#save-media-assets)
-* [Add a page to the site](#add-a-page-to-the-site)
 * [Run the project](#run-the-project)
 * [COPY editing](#copy-editing)
-* [Arbitrary Google Docs](#arbitrary-google-docs)
-* [Run Python tests](#run-python-tests)
-* [Run Javascript tests](#run-javascript-tests)
 * [Compile static assets](#compile-static-assets)
 * [Test the rendered app](#test-the-rendered-app)
 * [Deploy to S3](#deploy-to-s3)
@@ -30,7 +26,7 @@ pixelcite
 What is this?
 -------------
 
-**TKTK: Describe pixelcite here.**
+Quotations for Twitter.
 
 Assumptions
 -----------
@@ -56,11 +52,9 @@ The project contains the following folders and important files:
 * ``jst`` -- Javascript ([Underscore.js](http://documentcloud.github.com/underscore/#template)) templates.
 * ``less`` -- [LESS](http://lesscss.org/) files, will be compiled to CSS and concatenated for deployment.
 * ``templates`` -- HTML ([Jinja2](http://jinja.pocoo.org/docs/)) templates, to be compiled locally.
-* ``tests`` -- Python unit tests.
 * ``www`` -- Static and compiled assets to be deployed. (a.k.a. "the output")
 * ``www/assets`` -- A symlink to an S3 bucket containing binary assets (images, audio).
 * ``www/live-data`` -- "Live" data deployed to S3 via cron jobs or other mechanisms. (Not deployed with the rest of the project.)
-* ``www/test`` -- Javascript tests and supporting files.
 * ``app.py`` -- A [Flask](http://flask.pocoo.org/) app for rendering the project locally.
 * ``app_config.py`` -- Global project configuration for scripts, deployment, etc.
 * ``copytext.py`` -- Code supporting the [Editing workflow](#editing-workflow)
@@ -112,15 +106,6 @@ Syncing these assets requires running a couple different commands at the right t
 * You can also take all remote versions (type "ra") or all local versions (type "la"). Type "c" to cancel if you aren't sure what to do.
 
 Unfortunantely, there is no automatic way to know when a file has been intentionally deleted from the server or your local directory. When you want to simultaneously remove a file from the server and your local environment (i.e. it is not needed in the project any longer), run ```fab assets.rm:"www/assets/file_name_here.jpg"```
-
-Adding a page to the site
--------------------------
-
-A site can have any number of rendered pages, each with a corresponding template and view. To create a new one:
-
-* Add a template to the ``templates`` directory. Ensure it extends ``_base.html``.
-* Add a corresponding view function to ``app.py``. Decorate it with a route to the page name, i.e. ``@app.route('/filename.html')``
-* By convention only views that end with ``.html`` and do not start with ``_``  will automatically be rendered when you call ``fab render``.
 
 Run the project
 ---------------
@@ -192,68 +177,6 @@ about_url
 download_label
 download_url
 ```
-
-Arbitrary Google Docs
-----------------------
-Sometimes, our projects need to read data from a Google Doc that's not involved with the COPY rig. In this case, we've got a class for you to download and parse an arbitrary Google Doc to a CSV.
-
-This solution will download the uncached version of the document, unlike those methods which use the "publish to the Web" functionality baked into Google Docs. Published versions can take up to 15 minutes up update!
-
-First, export a valid Google username (email address) and password to your environment.
-
-```
-export APPS_GOOGLE_EMAIL=foo@gmail.com
-export APPS_GOOGLE_PASS=MyPaSsW0rd1!
-```
-
-Then, you can load up the `GoogleDoc` class in `etc/gdocs.py` to handle the task of authenticating and downloading your Google Doc.
-
-Here's an example of what you might do:
-
-```
-import csv
-
-from etc.gdoc import GoogleDoc
-
-def read_my_google_doc():
-    doc = {}
-    doc['key'] = '0ArVJ2rZZnZpDdEFxUlY5eDBDN1NCSG55ZXNvTnlyWnc'
-    doc['gid'] = '4'
-    doc['file_format'] = 'csv'
-    doc['file_name'] = 'gdoc_%s.%s' % (doc['key'], doc['file_format'])
-
-    g = GoogleDoc(**doc)
-    g.get_auth()
-    g.get_document()
-
-    with open('data/%s' % doc['file_name'], 'wb') as readfile:
-        csv_file = list(csv.DictReader(readfile))
-
-    for line_number, row in enumerate(csv_file):
-        print line_number, row
-
-read_my_google_doc()
-```
-
-Google documents will be downloaded to `data/gdoc.csv` by default.
-
-You can pass the class many keyword arguments if you'd like; here's what you can change:
-* gid AKA the sheet number
-* key AKA the Google Docs document ID
-* file_format (xlsx, csv, json)
-* file_name (to download to)
-
-See `etc/gdocs.py` for more documentation.
-
-Run Python tests
-----------------
-
-Python unit tests are stored in the ``tests`` directory. Run them with ``fab tests``.
-
-Run Javascript tests
---------------------
-
-With the project running, visit [localhost:8000/test/SpecRunner.html](http://localhost:8000/test/SpecRunner.html).
 
 Compile static assets
 ---------------------
