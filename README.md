@@ -1,13 +1,7 @@
-Copyright 2014 NPR.  All rights reserved.  No part of these materials may be reproduced, modified, stored in a retrieval system, or retransmitted, in any form or by any means, electronic, mechanical or otherwise, without prior written permission from NPR.
-
-(Want to use this code? Send an email to nprapps@npr.org!)
-
-
 pixelcite
 ========================
 
 * [What is this?](#what-is-this)
-* [Assumptions](#assumptions)
 * [What's in here?](#whats-in-here)
 * [Bootstrap the project](#bootstrap-the-project)
 * [Hide project secrets](#hide-project-secrets)
@@ -16,9 +10,7 @@ pixelcite
 * [COPY editing](#copy-editing)
 * [Compile static assets](#compile-static-assets)
 * [Test the rendered app](#test-the-rendered-app)
-* [Deploy to S3](#deploy-to-s3)
-* [Deploy to EC2](#deploy-to-ec2)
-* [Install cron jobs](#install-cron-jobs)
+* [Deploy to S3 and EC2](#deploy-to-s3-and-ec2)
 * [Install web services](#install-web-services)
 * [Run a remote fab command](#run-a-remote-fab-command)
 * [Report analytics](#report-analytics)
@@ -28,17 +20,7 @@ What is this?
 
 Quotations for Twitter.
 
-Assumptions
------------
-
-The following things are assumed to be true in this documentation.
-
-* You are running OSX.
-* You are using Python 2.7. (Probably the version that came OSX.)
-* You have [virtualenv](https://pypi.python.org/pypi/virtualenv) and [virtualenvwrapper](https://pypi.python.org/pypi/virtualenvwrapper) installed and working.
-* You have NPR's AWS credentials stored as environment variables locally.
-
-For more details on the technology stack used with the app-template, see our [development environment blog post](http://blog.apps.npr.org/2013/06/06/how-to-setup-a-developers-environment.html).
+This project is based on the [NPR app-template](https://github.com/nprapps/app-template).
 
 What's in here?
 ---------------
@@ -54,7 +36,6 @@ The project contains the following folders and important files:
 * ``templates`` -- HTML ([Jinja2](http://jinja.pocoo.org/docs/)) templates, to be compiled locally.
 * ``www`` -- Static and compiled assets to be deployed. (a.k.a. "the output")
 * ``www/assets`` -- A symlink to an S3 bucket containing binary assets (images, audio).
-* ``www/live-data`` -- "Live" data deployed to S3 via cron jobs or other mechanisms. (Not deployed with the rest of the project.)
 * ``app.py`` -- A [Flask](http://flask.pocoo.org/) app for rendering the project locally.
 * ``app_config.py`` -- Global project configuration for scripts, deployment, etc.
 * ``copytext.py`` -- Code supporting the [Editing workflow](#editing-workflow)
@@ -114,7 +95,7 @@ A flask app is used to run the project locally. It will automatically recompile 
 
 ```
 workon $PROJECT_SLUG
-python app.py
+python public_app.py
 ```
 
 Visit [localhost:8000](http://localhost:8000) in your browser.
@@ -200,55 +181,17 @@ cd www
 python -m SimpleHTTPServer
 ```
 
-Deploy to S3
-------------
+Deploy to S3 and EC2
+--------------------
 
 ```
 fab staging master deploy
 ```
 
-Deploy to EC2
--------------
-
-You can deploy to EC2 for a variety of reasons. We cover two cases: Running a dynamic web application (`public_app.py`) and executing cron jobs (`crontab`).
-
-Servers capable of running the app can be setup using our [servers](https://github.com/nprapps/servers) project.
-
-For running a Web application:
-
-* In ``app_config.py`` set ``DEPLOY_TO_SERVERS`` to ``True``.
-* Also in ``app_config.py`` set ``DEPLOY_WEB_SERVICES`` to ``True``.
-* Run ``fab staging master servers.setup`` to configure the server.
-* Run ``fab staging master deploy`` to deploy the app.
-
-For running cron jobs:
-
-* In ``app_config.py`` set ``DEPLOY_TO_SERVERS`` to ``True``.
-* Also in ``app_config.py``, set ``INSTALL_CRONTAB`` to ``True``
-* Run ``fab staging master servers.setup`` to configure the server.
-* Run ``fab staging master deploy`` to deploy the app.
-
-You can configure your EC2 instance to both run Web services and execute cron jobs; just set both environment variables in the fabfile.
-
-Install cron jobs
------------------
-
-Cron jobs are defined in the file `crontab`. Each task should use the `cron.sh` shim to ensure the project's virtualenv is properly activated prior to execution. For example:
-
-```
-* * * * * ubuntu bash /home/ubuntu/apps/pixelcite/repository/cron.sh fab $DEPLOYMENT_TARGET cron_jobs.test 
-```
-
-To install your crontab set `INSTALL_CRONTAB` to `True` in `app_config.py`. Cron jobs will be automatically installed each time you deploy to EC2.
-
-The cron jobs themselves should be defined in `fabfile/cron_jobs.py` whenever possible.
-
 Install web services
 ---------------------
 
 Web services are configured in the `confs/` folder.
-
-Running ``fab servers.setup`` will deploy your confs if you have set ``DEPLOY_TO_SERVERS`` and ``DEPLOY_WEB_SERVICES`` both to ``True`` at the top of ``app_config.py``.
 
 To check that these files are being properly rendered, you can render them locally and see the results in the `confs/rendered/` directory.
 

@@ -61,7 +61,6 @@ var onDocumentReady = function() {
     $tweet = $('#tweet');
 
     // Init controls
-    //
     $fontSize.TouchSpin({
         min: 18,
         max: 120
