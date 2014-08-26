@@ -316,7 +316,8 @@ var updateStatus = function() {
         count -= entity.url.length;
         count += URL_CHARS;
 
-        entity.url = processUrl(entity.url);
+        // Disabled because Amazon rejected affiliate account anyway
+        //entity.url = processUrl(entity.url);
     });
 
     var status = twttr.txt.autoLinkEntities(status, entities, {
